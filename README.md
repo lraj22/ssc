@@ -1,2 +1,3 @@
-# ssc
-The School Schedule Clock: Tracking Bells, Breaks, and Beyond!
+# The School Schedule Clock
+
+More details coming soon!
