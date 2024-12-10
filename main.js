@@ -15,8 +15,19 @@ function tick () {
 	requestAnimationFrame(tick);
 }
 
-scheduleBtn.addEventListener("click", function () {
-	alert("This button doesn't do anything yet.");
-});
+var showModes = ["showMain", "showSchedule"];
+function setShow (mode) {
+	for (var index in showModes) {
+		document.body.classList.remove(showModes[index]);
+	}
+	document.body.classList.add(mode);
+}
+
+scheduleBtn.onclick = function () {
+	setShow("showSchedule")
+};
+exitScheduleView.onclick = saveSchedule.onclick = function () {
+	setShow("showMain");
+};
 
 requestAnimationFrame(tick);

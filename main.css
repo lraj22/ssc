@@ -4,6 +4,7 @@ html, body {
 	margin: 0;
 	width: 100vw;
 	height: 100vh;
+	overflow: hidden;
 }
 
 * {
@@ -12,11 +13,13 @@ html, body {
 }
 
 #mainDisplay {
+	display: none;
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
+body.showMain #mainDisplay { display: block; }
 
 #timeView {
 	font-size: 15vw;
@@ -45,4 +48,64 @@ button {
 button:active {
 	top: 0.1em;
 	box-shadow: inset 0 -0.55em 0 -0.3em rgba(0, 0, 0, 0.2);
+}
+
+#scheduleView {
+	display: none;
+	padding: 2em;
+	width: 600px;
+	box-shadow: 0 0 1em 0.1em rgba(255, 255, 255, 0.1);
+	position: fixed;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 100vh;
+}
+body.showSchedule #scheduleView { display: block; }
+
+.scheduleBlock {
+	border: 1px dashed white;
+	padding: 1em;
+}
+
+.scheduleBlock>div {
+	margin-bottom: 2em;
+}
+
+.schLabel {
+	display: block;
+	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+input[type="text"] {
+	background: transparent;
+	font-size: 1.2vw;
+	border: none;
+	border-bottom: 1px solid white;
+	transition: all 250ms;
+	color: white;
+	outline: none;
+	width: 100%;
+}
+
+input, button {
+	margin-top: 0.5em;
+}
+
+input[type="text"]:hover {
+	border-bottom-width: 2px;
+}
+
+input[type="text"]:focus {
+	border-bottom-color: #2244ff;
+}
+
+.period {
+	border: 2px solid rgba(127, 127, 127, 0.5);
+	border-radius: 4px;
+	padding: 0.5em;
+	margin: 0.5em 0;
+}
+
+.btnDanger {
+	background-color: #771111;
 }
