@@ -15,4 +15,8 @@ function tick () {
 	requestAnimationFrame(tick);
 }
 
+scheduleBtn.addEventListener("click", function () {
+	alert("This button doesn't do anything yet.");
+});
+
 requestAnimationFrame(tick);
