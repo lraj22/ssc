@@ -12,42 +12,14 @@
 			<div id="timeView">--:--</div>
 			<div id="timePeriodView">
 				<span id="timePeriod"></span>
-				<button type="button" id="scheduleBtn">+ Add Schedule</button>
+				<button type="button" id="scheduleBtn" class="largeBtn">+ Add Schedule</button>
 			</div>
 		</div>
 		<div id="scheduleView">
 			<h1>Schedule Editor</h1>
 			<p>Create and edit your schedule here!</p>
 			<p>This tool lets you enter your school schedule. After saving your changes, the schedule will be reflected on the clock on the main screen.</p>
-			<div class="scheduleBlock">
-				<div title="Give this schedule a name. For example: 'Regular Schedule', 'Late Start', 'Block A', etc.">
-					<label for="schNameInput" class="schLabel">Schedule name</label><input type="text" id="schNameInput">
-				</div>
-				<div title="Add some periods. Ex. class periods, passing periods, lunch, and anything else you want to add.">
-					<label class="schLabel">Periods</label>
-					<div class="periodsBlock">
-						<div class="period">
-							<label>Name</label>
-							<input type="text" title="Name of period, ex. First period, 1st-2nd passing period, Lunch, etc."><br><br>
-							<label>Time</label>
-							<input type="time" title="Start of period, ex. 9:00 AM">
-							to
-							<input type="time" title="End of period, ex. 10:00 AM"><br><br>
-						</div>
-						<button class="addPeriod">ADD PERIOD</button>
-					</div>
-				</div>
-				<div title="Which days of the week is this schedule effective? For example, all weekdays, only Monday, etc.">
-					<label class="schLabel">Days of the week</label>
-					<input type="checkbox" name="sunday" id="sunday"><label for="sunday"> Sunday</label><br>
-					<input type="checkbox" name="monday" id="monday"><label for="monday"> Monday</label><br>
-					<input type="checkbox" name="tuesday" id="tuesday"><label for="tuesday"> Tuesday</label><br>
-					<input type="checkbox" name="wednesday" id="wednesday"><label for="wednesday"> Wednesday</label><br>
-					<input type="checkbox" name="thursday" id="thursday"><label for="thursday"> Thursday</label><br>
-					<input type="checkbox" name="friday" id="friday"><label for="friday"> Friday</label><br>
-					<input type="checkbox" name="saturday" id="saturday"><label for="saturday"> Saturday</label><br>
-				</div>
-			</div>
+			<div id="scheduleContainer"></div>
 			<button id="addSchedule">ADD SCHEDULE</button><br><br>
 			<button type="button" id="exitScheduleView" class="btnDanger">EXIT</button>
 			<button type="button" id="saveSchedule">SAVE</button>
