@@ -25,7 +25,8 @@ function setShow (mode) {
 }
 
 scheduleBtn.onclick = function () {
-	setShow("showSchedule")
+	setShow("showSchedule");
+	addScheduleBlock();
 };
 exitScheduleView.onclick = saveSchedule.onclick = function () {
 	setShow("showMain");
@@ -39,6 +40,9 @@ var hints = {
 	"schPeriodStart": "Start of period, ex. 9:00 AM",
 	"schPeriodEnd": "End of period, ex. 10:00 AM",
 	"schDays": "Which days of the week is this schedule effective? For example, all weekdays, only Monday, etc.",
+	"periodMoveUp": "Move this period up",
+	"periodRemove": "Remove this period",
+	"periodMoveDown": "Move this period down",
 };
 var lastUsedScheduleId = 1;
 var lastUsedPeriodIds = [];
@@ -51,17 +55,24 @@ addSchedule.onclick = function () {
 function addPeriod (schId) {
 	var periods = document.getElementById("periods" + schId);
 	var periodId = lastUsedPeriodIds[schId - 1]++;
-	var addPeriodBtn = document.getElementById("addPeriod" + schId);
 	var period = document.createElement("div");
+	period.id = "period" + schId + "_" + periodId;
 	period.classList.add("period");
-	var periodNumber = periods.childElementCount;
-	period.insertAdjacentHTML("beforeend", `<label for="periodName${schId}_${periodId}">Name</label>
+	var periodNumber = periods.childElementCount + 1;
+	period.insertAdjacentHTML("beforeend", `<label for="periodName${schId}_${periodId}">Name: </label>
 <input type="text" id="periodName${schId}_${periodId}" title="${hints.schPeriodName}" value="Period ${periodNumber}"><br><br>
-<label>Time</label>
+<label for="periodStart${schId}_${periodId}">Starts: </label>
 <input type="time" id="periodStart${schId}_${periodId}" title="${hints.schPeriodStart}">
-<span> to </span>
-<input type="time" id="periodEnd${schId}_${periodId}" title="${hints.schPeriodEnd}"><br><br>`);
-	addPeriodBtn.insertAdjacentElement("beforebegin", period);
+<div class="floatRight">
+	<label for="periodEnd${schId}_${periodId}">Ends: </label>
+	<input type="time" id="periodEnd${schId}_${periodId}" title="${hints.schPeriodEnd}">
+</div><br><br>
+<div class="topRightBtnMenu">
+	<span class="material-symbols-outlined" onclick="movePeriodUp(${schId},${periodId})" data-purpose="moveUp" title="${hints.periodMoveUp}">move_up</span>
+	<span class="material-symbols-outlined textDanger" onclick="removePeriod(${schId},${periodId})" data-purpose="remove" title="${hints.periodRemove}">delete</span>
+	<span class="material-symbols-outlined" onclick="movePeriodDown(${schId},${periodId})" data-purpose="moveDown" title="${hints.periodMoveDown}">move_down</span>
+</div>`);
+	periods.appendChild(period);
 }
 
 function addScheduleBlock () {
@@ -71,13 +82,13 @@ function addScheduleBlock () {
 	lastUsedPeriodIds[schId - 1] = 1;
 	schBlock.id = "schedule" + schId;
 	schBlock.insertAdjacentHTML("beforeend", `<div title="${hints.schName}">
-	<label for="schNameInput" class="schLabel">Schedule name</label><input type="text" id="schNameInput">
+	<label for="schNameInput" class="schLabel">Schedule name</label>
+	<input type="text" id="schNameInput" value="Schedule ${schId}">
 </div>
 <div title="${hints.schPeriods}">
 	<label class="schLabel">Periods</label>
-	<div class="periodsBlock" id="periods${schId}">
-		<button class="addPeriod" id="addPeriod${schId}" onclick="addPeriod(${schId})">ADD PERIOD</button>
-	</div>
+	<div class="periodsBlock" id="periods${schId}"></div>
+	<button class="addPeriod" id="addPeriod${schId}" onclick="addPeriod(${schId})">ADD PERIOD</button>
 </div>
 <div title="${hints.schDays}">
 	<label class="schLabel">Days of the week</label>
@@ -88,8 +99,53 @@ function addScheduleBlock () {
 	<input type="checkbox" id="thursday${schId}"><label for="thursday${schId}"> Thursday</label><br>
 	<input type="checkbox" id="friday${schId}"><label for="friday${schId}"> Friday</label><br>
 	<input type="checkbox" id="saturday${schId}"><label for="saturday${schId}"> Saturday</label><br>
+</div>
+<div class="buttonContainer">
+<button class="btnInfo" onclick="moveScheduleUp(${schId})" data-purpose="moveUp">Move up</button>
+<button class="btnDanger" onclick="removeSchedule(${schId})" data-purpose="remove">Remove</button>
+	<button class="btnInfo" onclick="moveScheduleDown(${schId})" data-purpose="moveDown">Move down</button>
 </div>`);
 	scheduleContainer.appendChild(schBlock);
+}
+
+function removeSchedule (schId) {
+	document.getElementById("schedule" + schId).remove();
+}
+
+function moveScheduleDown (schId) {
+	var currentSchedule = document.getElementById("schedule" + schId);
+	var nextSchedule = currentSchedule.nextElementSibling;
+	if (nextSchedule) {
+		nextSchedule.insertAdjacentElement("afterend", currentSchedule);
+	}
+}
+
+function moveScheduleUp (schId) {
+	var currentSchedule = document.getElementById("schedule" + schId);
+	var previousSchedule = currentSchedule.previousElementSibling;
+	if (previousSchedule) {
+		previousSchedule.insertAdjacentElement("beforebegin", currentSchedule);
+	}
+}
+
+function removePeriod (schId, periodId) {
+	document.getElementById("period" + schId + "_" + periodId).remove();
+}
+
+function movePeriodDown (schId, periodId) {
+	var currentPeriod = document.getElementById("period" + schId + "_" + periodId);
+	var nextPeriod = currentPeriod.nextElementSibling;
+	if (nextPeriod) {
+		nextPeriod.insertAdjacentElement("afterend", currentPeriod);
+	}
+}
+
+function movePeriodUp (schId, periodId) {
+	var currentPeriod = document.getElementById("period" + schId + "_" + periodId);
+	var previousPeriod = currentPeriod.previousElementSibling;
+	if (previousPeriod) {
+		previousPeriod.insertAdjacentElement("beforebegin", currentPeriod);
+	}
 }
 
 requestAnimationFrame(tick);

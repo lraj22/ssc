@@ -68,9 +68,26 @@ button:active {
 }
 body.showSchedule #scheduleView { display: block; }
 
+#scheduleContainer>.scheduleBlock:first-child .buttonContainer [data-purpose="moveUp"] {
+	display: none;
+}
+
+#scheduleContainer>.scheduleBlock:last-child .buttonContainer [data-purpose="moveDown"] {
+	display: none;
+}
+
+.periodsBlock>.period:first-child .topRightBtnMenu [data-purpose="moveUp"] {
+	visibility: hidden;
+}
+
+.periodsBlock>.period:last-child .topRightBtnMenu [data-purpose="moveDown"] {
+	visibility: hidden;
+}
+
 .scheduleBlock {
 	border: 1px dashed white;
 	padding: 1em;
+	margin-bottom: 1em;
 }
 
 .scheduleBlock>div {
@@ -97,10 +114,6 @@ input, button {
 	margin-top: 0.5em;
 }
 
-input[type="text"]:hover {
-	border-bottom-width: 2px;
-}
-
 input[type="text"]:focus {
 	border-bottom-color: #2244ff;
 }
@@ -109,9 +122,59 @@ input[type="text"]:focus {
 	border: 2px solid rgba(127, 127, 127, 0.5);
 	border-radius: 4px;
 	padding: 0.5em;
+	padding-bottom: 0;
 	margin: 0.5em 0;
+	position: relative;
+}
+
+.period input[type="text"] {
+	font-size: larger;
+	width: auto;
+}
+
+.period input {
+	margin: 0;
+}
+
+.topRightBtnMenu {
+	position: absolute;
+	top: 0.3em;
+	right: 0.4em;
+	font-size: 20px;
+}
+
+.topRightBtnMenu>span:hover {
+	transition: all 100ms;
+	transform: scale(1.1);
+	cursor: pointer;
+}
+
+.buttonContainer {
+	display: flex;
+	justify-content: space-between;
+	gap: 1em;
+}
+
+.scheduleBlock>.buttonContainer {
+	margin: 0;
+}
+
+.buttonContainer button {
+	flex: 1;
+}
+
+.btnInfo {
+	background-color: #0066ff;
+}
+
+.textDanger {
+	color: #771111;
 }
 
 .btnDanger {
 	background-color: #771111;
+}
+
+.floatRight {
+	float: right;
 }
