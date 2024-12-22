@@ -24,13 +24,32 @@ function setShow (mode) {
 	document.body.classList.add(mode);
 }
 
-scheduleBtn.onclick = function () {
+scheduleBtn.addEventListener("click", function () {
 	setShow("showSchedule");
-	addScheduleBlock();
-};
-exitScheduleView.onclick = saveSchedule.onclick = function () {
+	if (!scheduleContainer.childElementCount) addScheduleBlock();
+});
+exitScheduleView.addEventListener("click", function () {
+	var unsavedChangesExist = recalcUnsavedChanges();
+	if (unsavedChangesExist) {
+		if (confirm("You have unsaved changes - exiting will delete them! Are you sure?")) {
+			setCurrentSchedules(JSON.parse(lastSavedSchedule));
+			recalcUnsavedChanges();
+			setShow("showMain");
+		}
+	} else setShow("showMain");
+});
+saveSchedule.addEventListener("click", function () {
+	saveState();
+	recalcUnsavedChanges();
 	setShow("showMain");
-};
+});
+deleteAll.addEventListener("click", function () {
+	if (!confirm("Are you sure you want to delete all schedules? This is irreversible!")) return;
+	scheduleContainer.innerHTML = "";
+	saveState();
+	recalcUnsavedChanges();
+	setShow("showMain");
+});
 
 // useful variables
 var hints = {
@@ -48,24 +67,25 @@ var lastUsedScheduleId = 1;
 var lastUsedPeriodIds = [];
 var _ = ""; // ${} placeholder
 
-addSchedule.onclick = function () {
+addSchedule.addEventListener("click", function () {
 	addScheduleBlock();
-};
+});
 
 function addPeriod (schId) {
 	var periods = document.getElementById("periods" + schId);
 	var periodId = lastUsedPeriodIds[schId - 1]++;
 	var period = document.createElement("div");
 	period.id = "period" + schId + "_" + periodId;
+	period.setAttribute("data-id", periodId);
 	period.classList.add("period");
 	var periodNumber = periods.childElementCount + 1;
 	period.insertAdjacentHTML("beforeend", `<label for="periodName${schId}_${periodId}">Name: </label>
-<input type="text" id="periodName${schId}_${periodId}" title="${hints.schPeriodName}" value="Period ${periodNumber}"><br><br>
+<input type="text" oninput="recalcUnsavedChanges()" id="periodName${schId}_${periodId}" title="${hints.schPeriodName}" value="Period ${periodNumber}"><br><br>
 <label for="periodStart${schId}_${periodId}">Starts: </label>
-<input type="time" id="periodStart${schId}_${periodId}" title="${hints.schPeriodStart}">
+<input type="time" oninput="recalcUnsavedChanges()" id="periodStart${schId}_${periodId}" title="${hints.schPeriodStart}">
 <div class="floatRight">
 	<label for="periodEnd${schId}_${periodId}">Ends: </label>
-	<input type="time" id="periodEnd${schId}_${periodId}" title="${hints.schPeriodEnd}">
+	<input type="time" oninput="recalcUnsavedChanges()" id="periodEnd${schId}_${periodId}" title="${hints.schPeriodEnd}">
 </div><br><br>
 <div class="topRightBtnMenu">
 	<span class="material-symbols-outlined" onclick="movePeriodUp(${schId},${periodId})" data-purpose="moveUp" title="${hints.periodMoveUp}">move_up</span>
@@ -73,6 +93,8 @@ function addPeriod (schId) {
 	<span class="material-symbols-outlined" onclick="movePeriodDown(${schId},${periodId})" data-purpose="moveDown" title="${hints.periodMoveDown}">move_down</span>
 </div>`);
 	periods.appendChild(period);
+	recalcUnsavedChanges();
+	return periodId;
 }
 
 function addScheduleBlock () {
@@ -81,24 +103,25 @@ function addScheduleBlock () {
 	var schId = lastUsedScheduleId++;
 	lastUsedPeriodIds[schId - 1] = 1;
 	schBlock.id = "schedule" + schId;
+	schBlock.setAttribute("data-id", schId);
 	schBlock.insertAdjacentHTML("beforeend", `<div title="${hints.schName}">
-	<label for="schNameInput" class="schLabel">Schedule name</label>
-	<input type="text" id="schNameInput" value="Schedule ${schId}">
+	<label for="schNameInput${schId}" class="schLabel">Schedule name</label>
+	<input type="text" oninput="recalcUnsavedChanges()" id="schNameInput${schId}" value="Schedule ${schId}">
 </div>
 <div title="${hints.schPeriods}">
 	<label class="schLabel">Periods</label>
 	<div class="periodsBlock" id="periods${schId}"></div>
 	<button class="addPeriod" id="addPeriod${schId}" onclick="addPeriod(${schId})">ADD PERIOD</button>
 </div>
-<div title="${hints.schDays}">
+<div id="days${schId}" title="${hints.schDays}">
 	<label class="schLabel">Days of the week</label>
-	<input type="checkbox" id="sunday${schId}"><label for="sunday${schId}"> Sunday</label><br>
-	<input type="checkbox" id="monday${schId}"><label for="monday${schId}"> Monday</label><br>
-	<input type="checkbox" id="tuesday${schId}"><label for="tuesday${schId}"> Tuesday</label><br>
-	<input type="checkbox" id="wednesday${schId}"><label for="wednesday${schId}"> Wednesday</label><br>
-	<input type="checkbox" id="thursday${schId}"><label for="thursday${schId}"> Thursday</label><br>
-	<input type="checkbox" id="friday${schId}"><label for="friday${schId}"> Friday</label><br>
-	<input type="checkbox" id="saturday${schId}"><label for="saturday${schId}"> Saturday</label><br>
+	<input type="checkbox" oninput="recalcUnsavedChanges()" id="sunday${schId}"><label for="sunday${schId}"> Sunday</label><br>
+	<input type="checkbox" oninput="recalcUnsavedChanges()" id="monday${schId}"><label for="monday${schId}"> Monday</label><br>
+	<input type="checkbox" oninput="recalcUnsavedChanges()" id="tuesday${schId}"><label for="tuesday${schId}"> Tuesday</label><br>
+	<input type="checkbox" oninput="recalcUnsavedChanges()" id="wednesday${schId}"><label for="wednesday${schId}"> Wednesday</label><br>
+	<input type="checkbox" oninput="recalcUnsavedChanges()" id="thursday${schId}"><label for="thursday${schId}"> Thursday</label><br>
+	<input type="checkbox" oninput="recalcUnsavedChanges()" id="friday${schId}"><label for="friday${schId}"> Friday</label><br>
+	<input type="checkbox" oninput="recalcUnsavedChanges()" id="saturday${schId}"><label for="saturday${schId}"> Saturday</label><br>
 </div>
 <div class="buttonContainer">
 <button class="btnInfo" onclick="moveScheduleUp(${schId})" data-purpose="moveUp">Move up</button>
@@ -106,10 +129,105 @@ function addScheduleBlock () {
 	<button class="btnInfo" onclick="moveScheduleDown(${schId})" data-purpose="moveDown">Move down</button>
 </div>`);
 	scheduleContainer.appendChild(schBlock);
+	recalcUnsavedChanges();
+	return schId;
+}
+
+var daysBitmap = {
+	"sunday": 64,
+	"monday": 32,
+	"tuesday": 16,
+	"wednesday": 8,
+	"thursday": 4,
+	"friday": 2,
+	"saturday": 1,
+};
+
+function currentSchedulesToJSON () {
+	var schedulesObj = [];
+	scheduleContainer.querySelectorAll(".scheduleBlock").forEach(function (schBlock) {
+		var schObj = {
+			"name": "<unset>",
+			"periods": [],
+			"days": 0,
+		};
+		var schId = parseInt(schBlock.getAttribute("data-id"));
+		schObj.name = document.getElementById("schNameInput" + schId).value;
+		var days = document.getElementById("days" + schId);
+		var dayBitfield = 0;
+		days.querySelectorAll("input").forEach(function (dayCheckbox) {
+			var dayName = dayCheckbox.id.replace(schId, "");
+			if (dayCheckbox.checked) dayBitfield |= daysBitmap[dayName];
+		});
+		schObj.days = dayBitfield;
+		schBlock.querySelectorAll(".period").forEach(function (period) {
+			var periodObj = {
+				"name": "<unset>",
+				"starts": "",
+				"ends": "",
+			};
+			var periodId = parseInt(period.getAttribute("data-id"));
+			var combinedId = schId + "_" + periodId;
+			periodObj.name = document.getElementById("periodName" + combinedId).value;
+			periodObj.starts = document.getElementById("periodStart" + combinedId).value;
+			periodObj.ends = document.getElementById("periodEnd" + combinedId).value;
+			schObj.periods.push(periodObj);
+		});
+		schedulesObj.push(schObj);
+	});
+	return schedulesObj;
+}
+function setCurrentSchedules (schedules) {
+	scheduleContainer.innerHTML = "";
+	schedules.forEach(function (savedSchedule) {
+		var schId = addScheduleBlock();
+		document.getElementById("schNameInput" + schId).value = savedSchedule.name;
+		Object.keys(daysBitmap).forEach(function (dayName) {
+			if (savedSchedule.days & daysBitmap[dayName]) {
+				document.getElementById(dayName + schId).checked = true;
+			}
+		});
+		savedSchedule.periods.forEach(function (period) {
+			var periodId = addPeriod(schId);
+			var combinedId = schId + "_" + periodId;
+			document.getElementById("periodName" + combinedId).value = period.name;
+			document.getElementById("periodStart" + combinedId).value = period.starts;
+			document.getElementById("periodEnd" + combinedId).value = period.ends;
+		});
+	});
+}
+var lastSavedSchedule = null;
+function saveState () {
+	var schedulesJSONified = currentSchedulesToJSON();
+	lastSavedSchedule = JSON.stringify(schedulesJSONified);
+	localforage.setItem("savedSchedules", schedulesJSONified);
+	unsavedChanges.className = "";
+}
+
+// load existing schedules
+localforage.getItem("savedSchedules").then(function (savedSchedules) {
+	if (!savedSchedules) return;
+	setCurrentSchedules(savedSchedules);
+	lastSavedSchedule = JSON.stringify(savedSchedules);
+});
+
+function recalcUnsavedChanges () {
+	if (lastSavedSchedule === null) return false;
+	var currentSchedules = currentSchedulesToJSON();
+	if (currentSchedules.length) {
+		scheduleBtn.innerHTML = `<span class="material-symbols-outlined">edit</span>`;
+	} else {
+		scheduleBtn.innerHTML = "+ Add Schedule";
+	}
+	var schedulesStr = JSON.stringify(currentSchedules);
+	var unsavedChangesExist = (schedulesStr !== lastSavedSchedule);
+	unsavedChanges.className = (unsavedChangesExist ? "": "hidden");
+	return unsavedChangesExist;
 }
 
 function removeSchedule (schId) {
 	document.getElementById("schedule" + schId).remove();
+	recalcUnsavedChanges();
 }
 
 function moveScheduleDown (schId) {
@@ -118,6 +236,7 @@ function moveScheduleDown (schId) {
 	if (nextSchedule) {
 		nextSchedule.insertAdjacentElement("afterend", currentSchedule);
 	}
+	recalcUnsavedChanges();
 }
 
 function moveScheduleUp (schId) {
@@ -126,10 +245,12 @@ function moveScheduleUp (schId) {
 	if (previousSchedule) {
 		previousSchedule.insertAdjacentElement("beforebegin", currentSchedule);
 	}
+	recalcUnsavedChanges();
 }
 
 function removePeriod (schId, periodId) {
 	document.getElementById("period" + schId + "_" + periodId).remove();
+	recalcUnsavedChanges();
 }
 
 function movePeriodDown (schId, periodId) {
@@ -138,6 +259,7 @@ function movePeriodDown (schId, periodId) {
 	if (nextPeriod) {
 		nextPeriod.insertAdjacentElement("afterend", currentPeriod);
 	}
+	recalcUnsavedChanges();
 }
 
 function movePeriodUp (schId, periodId) {
@@ -146,6 +268,7 @@ function movePeriodUp (schId, periodId) {
 	if (previousPeriod) {
 		previousPeriod.insertAdjacentElement("beforebegin", currentPeriod);
 	}
+	recalcUnsavedChanges();
 }
 
 requestAnimationFrame(tick);

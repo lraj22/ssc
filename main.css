@@ -175,6 +175,30 @@ input[type="text"]:focus {
 	background-color: #771111;
 }
 
+.btnSmall {
+	font-size: 0.7vw;
+}
+
+.textCenter {
+	display: block;
+	margin: 0 auto;
+}
+
 .floatRight {
 	float: right;
+}
+
+#unsavedChanges {
+	position: fixed;
+	top: 1em;
+	right: 50%;
+	transform: translateX(50%);
+	color: yellow;
+	background-color: #222222;
+	padding: 1em;
+	border-radius: 4px;
+}
+
+.hidden {
+	display: none;
 }
