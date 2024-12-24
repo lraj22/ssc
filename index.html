@@ -24,6 +24,15 @@
 			<h1>Schedule Editor</h1>
 			<p>Create and edit your schedule here!</p>
 			<p>This tool lets you enter your school schedule. After saving your changes, the schedule will be reflected on the clock on the main screen.</p>
+			<button type="button" id="uploadSchedules" title="Have a schedules file? Upload it here!">Upload</button>
+			<button type="button" id="shareSchedules" title="Send a file or link to someone with this schedule!">Share</button><br><br>
+			<div id="shareMenu" class="hidden">
+				<label class="schLabel">Share menu</label>
+				<button type="button" id="downloadSchedules" title="Download your schedules as a file!">Download as file</button>
+				<button type="button" id="copySchedulesLink" title="Copy all of your schedules as a link!">Copy link</button>
+			</div>
+			<p id="usingURLNotifier">These schedules were loaded from a link. <span class="linklike" id="backToOwnSchedules">Go back to your schedules.</span></p>
+			<input type="file" id="uploadFileInput">
 			<div id="scheduleContainer"></div>
 			<button id="addSchedule">ADD SCHEDULE</button><br><br>
 			<button type="button" id="exitScheduleView" class="btnDanger">EXIT</button>

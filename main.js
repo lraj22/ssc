@@ -36,11 +36,11 @@ window.addEventListener("mousemove", function (e) {
 });
 
 function getCurrentPeriod () {
-	if (lastSavedSchedule === null) return null;
+	if (lastSavedSchedules === null) return null;
 	var d = new Date();
 	var today = 1 << d.getDay();
-	for (let i = 0; i < lastSavedSchedule.length; i++) {
-		let currentSchedule = lastSavedSchedule[i];
+	for (let i = 0; i < lastSavedSchedules.length; i++) {
+		let currentSchedule = lastSavedSchedules[i];
 		if (!(currentSchedule.days & today)) break;
 		for (let j = 0; j < currentSchedule.periods.length; j++) {
 			let period = currentSchedule.periods[j];
@@ -118,7 +118,7 @@ exitScheduleView.addEventListener("click", function () {
 	var unsavedChangesExist = recalcUnsavedChanges();
 	if (unsavedChangesExist) {
 		if (confirm("You have unsaved changes - exiting will delete them! Are you sure?")) {
-			setCurrentSchedules(lastSavedSchedule);
+			setCurrentSchedules(lastSavedSchedules);
 			recalcUnsavedChanges();
 			setShow("showMain");
 		}
@@ -264,41 +264,63 @@ function currentSchedulesToJSON () {
 	return schedulesObj;
 }
 function setCurrentSchedules (schedules) {
-	scheduleContainer.innerHTML = "";
-	schedules.forEach(function (savedSchedule) {
-		var schId = addScheduleBlock();
-		document.getElementById("schNameInput" + schId).value = savedSchedule.name;
-		Object.keys(daysBitmap).forEach(function (dayName) {
-			if (savedSchedule.days & daysBitmap[dayName]) {
-				document.getElementById(dayName + schId).checked = true;
-			}
+	try {
+		scheduleContainer.innerHTML = "";
+		schedules.forEach(function (savedSchedule) {
+			var schId = addScheduleBlock();
+			document.getElementById("schNameInput" + schId).value = savedSchedule.name;
+			Object.keys(daysBitmap).forEach(function (dayName) {
+				if (savedSchedule.days & daysBitmap[dayName]) {
+					document.getElementById(dayName + schId).checked = true;
+				}
+			});
+			savedSchedule.periods.forEach(function (period) {
+				var periodId = addPeriod(schId);
+				var combinedId = schId + "_" + periodId;
+				document.getElementById("periodName" + combinedId).value = period.name;
+				document.getElementById("periodStart" + combinedId).value = period.starts;
+				document.getElementById("periodEnd" + combinedId).value = period.ends;
+			});
 		});
-		savedSchedule.periods.forEach(function (period) {
-			var periodId = addPeriod(schId);
-			var combinedId = schId + "_" + periodId;
-			document.getElementById("periodName" + combinedId).value = period.name;
-			document.getElementById("periodStart" + combinedId).value = period.starts;
-			document.getElementById("periodEnd" + combinedId).value = period.ends;
-		});
-	});
+		return true;
+	} catch (e) {
+		console.error(e);
+		return false;
+	}
 }
-var lastSavedSchedule = null;
+var lastSavedSchedules = null;
 function saveState () {
-	lastSavedSchedule = currentSchedulesToJSON();
-	localforage.setItem("savedSchedules", lastSavedSchedule);
+	setUsingURL(false);
+	lastSavedSchedules = currentSchedulesToJSON();
+	localforage.setItem("savedSchedules", lastSavedSchedules);
 	unsavedChanges.className = "";
 }
 
 // load existing schedules
+var timeToCharacter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-".split("");
+var usingURL = false;
+setUsingURL(false);
+console.log(usingURL);
 localforage.getItem("savedSchedules").then(function (savedSchedules) {
 	if (!savedSchedules) return;
 	setCurrentSchedules(savedSchedules);
-	lastSavedSchedule = savedSchedules;
+	lastSavedSchedules = savedSchedules;
 	recalcUnsavedChanges();
+	var loadURL = new URL(location.href);
+	var serializedSchedulesV1 = loadURL.searchParams.get("sv1");
+	if (serializedSchedulesV1) {
+		var deserialized = deserializeSchCode(serializedSchedulesV1);
+		if (JSON.stringify(lastSavedSchedules) !== JSON.stringify(deserialized)) {
+			setUsingURL(true);
+			setCurrentSchedules(deserialized);
+			lastSavedSchedules = deserialized;
+		}
+	} else setUsingURL(false);
 });
 
 function recalcUnsavedChanges () {
-	if (lastSavedSchedule === null) return false;
+	if (lastSavedSchedules === null) return false;
+	if (usingURL) return false;
 	var currentSchedules = currentSchedulesToJSON();
 	if (currentSchedules.length) {
 		scheduleBtn.innerHTML = `<span class="material-symbols-outlined">edit</span>`;
@@ -306,9 +328,14 @@ function recalcUnsavedChanges () {
 		scheduleBtn.innerHTML = "+ Add Schedule";
 	}
 	var schedulesStr = JSON.stringify(currentSchedules);
-	var unsavedChangesExist = (schedulesStr !== JSON.stringify(lastSavedSchedule));
+	var unsavedChangesExist = (schedulesStr !== JSON.stringify(lastSavedSchedules));
 	unsavedChanges.className = (unsavedChangesExist ? "": "hidden");
 	return unsavedChangesExist;
+}
+
+function setUsingURL (value) {
+	usingURL = value;
+	usingURLNotifier.classList.toggle("hidden", !value);
 }
 
 function removeSchedule (schId) {
@@ -355,6 +382,124 @@ function movePeriodUp (schId, periodId) {
 		previousPeriod.insertAdjacentElement("beforebegin", currentPeriod);
 	}
 	recalcUnsavedChanges();
+}
+
+backToOwnSchedules.addEventListener("click", function () {
+	var currentURL = new URL(location.href);
+	currentURL.searchParams.delete("sv1");
+	location.assign(currentURL);
+});
+
+uploadSchedules.addEventListener("click", function () {
+	uploadFileInput.click();
+});
+
+uploadFileInput.addEventListener("change", function (changeEvent) {
+	var file = changeEvent.target.files[0];
+	if (!file) return;
+	var reader = new FileReader();
+	reader.readAsText(file, "utf-8");
+	reader.onload = function (readerEvent) {
+		try {
+			var schedulesJSON = JSON.parse(readerEvent.target.result);
+			var success = setCurrentSchedules(schedulesJSON);
+			if (!success) {
+				alert("The file you uploaded may be corrupted - there was an error in loading the schedules.");
+			}
+		} catch (e) {
+			alert("The file you uploaded could not be parsed correctly. It may be corrupted, or it may just be the wrong file.");
+		}
+	};
+});
+
+shareSchedules.addEventListener("click", function () {
+	shareMenu.classList.toggle("hidden");
+});
+
+downloadSchedules.addEventListener("click", function () {
+	if (recalcUnsavedChanges()) {
+		alert("You have unsaved changes. Please save/discard first, then download your schedules.");
+		return;
+	}
+	var fileTitle = prompt("Give your schedules a title (hint: school name, regular schedules, etc.)");
+	if (fileTitle === null) return;
+	fileTitle = fileTitle.trim() || "Schedules";
+	var downloadLink = document.createElement("a");
+	downloadLink.setAttribute("href", "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(lastSavedSchedules, null, "\t")));
+	downloadLink.setAttribute("download", fileTitle + ".json");
+	downloadLink.click();
+});
+
+copySchedulesLink.addEventListener("click", function () {
+	if (recalcUnsavedChanges()) {
+		alert("You have unsaved changes. Please save/discard first, then download your schedules.");
+		return;
+	}
+	var serialized = serializeSchedules();
+	console.log(serialized);
+	var schedulesLink = new URL(location.href);
+	schedulesLink.searchParams.set("sv1", serialized);
+	navigator.clipboard.writeText(schedulesLink.toString()).then(function () {
+		alert("The link has been successfully copied! Share it with your classmates!\n" + schedulesLink.toString());
+	}).catch(function (error) {
+		alert("There was an error. Please copy the link manually:\n" + schedulesLink.toString())
+		console.log(error);
+	});
+});
+
+function serializeSchedules () {
+	return lastSavedSchedules.map(function (schedule) {
+		var scheduleParts = [];
+		scheduleParts.push(userTextToBase64(schedule.name));
+		scheduleParts.push(schedule.days.toString(16));
+		for (let i = 0; i < schedule.periods.length; i++) {
+			let period = schedule.periods[i];
+			scheduleParts.push(compressTimeBit(period.starts) + compressTimeBit(period.ends) + userTextToBase64(period.name));
+		}
+		return scheduleParts.join(",");
+	}).join(";");
+}
+
+function deserializeSchCode (schCode) {
+	return schCode.split(";").map(function (scheduleCode) {
+		var scheduleParts = scheduleCode.split(",");
+		return {
+			"name": base64ToUserText(scheduleParts[0]),
+			"periods": scheduleParts.slice(2).map(function (periodCode) {
+				return {
+					"name": base64ToUserText(periodCode.slice(4)),
+					"starts": decompressTimeBit(periodCode.slice(0, 2)),
+					"ends": decompressTimeBit(periodCode.slice(2, 4)),
+				};
+			}),
+			"days": parseInt(scheduleParts[1], 16),
+		};
+	});
+}
+
+function compressTimeBit (timeBit) {
+	var parts = timeBit.split(":");
+	var hours = parseInt(parts[0]);
+	var minutes = parseInt(parts[1]);
+	return timeToCharacter[hours] + timeToCharacter[minutes];
+}
+
+function decompressTimeBit (compressedTimeBit) {
+	var hours = timeToCharacter.findIndex(function (char) { return char === compressedTimeBit[0] });
+	var minutes = timeToCharacter.findIndex(function (char) { return char === compressedTimeBit[1] });
+	return hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0");
+}
+
+function userTextToBase64 (userText) {
+	return btoa(Array.from(new TextEncoder().encode(userText), function (byte) {
+		return String.fromCodePoint(byte);
+	}).join("")).replaceAll("/", "-");
+}
+
+function base64ToUserText (base64) {
+	return new TextDecoder().decode(Uint8Array.from(atob(base64.replaceAll("-", "/")), function (m) {
+		return m.codePointAt(0);
+	}));
 }
 
 requestAnimationFrame(tick);

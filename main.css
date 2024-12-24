@@ -226,3 +226,20 @@ input[type="text"]:focus {
 .hidden {
 	display: none;
 }
+
+#uploadFileInput {
+	display: none;
+}
+
+#shareMenu {
+	border-radius: 4px;
+	background-color: #222222;
+	padding: 0.5em;
+	margin-bottom: 1em;
+}
+
+.linklike {
+	color: lightsteelblue;
+	text-decoration: underline;
+	cursor: pointer;
+}
