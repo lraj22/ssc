@@ -12,12 +12,15 @@ html, body {
 	line-height: 1;
 }
 
-#mainDisplay {
-	display: none;
+#centerDisplay {
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+
+#mainDisplay {
+	display: none;
 }
 body.showMain #mainDisplay { display: block; }
 
@@ -30,6 +33,27 @@ body.showMain #mainDisplay { display: block; }
 #timePeriodView {
 	text-align: center;
 	font-size: 2vw;
+}
+
+#timeOver {
+	position: fixed;
+	top: 50%;
+	left: 2vw;
+	display: none;
+}
+
+[data-pointerpos = "left"] #timeOver {
+	display: block;
+}
+
+#timeLeft {
+	position: fixed;
+	top: 50%;
+	right: 2vw;
+}
+
+[data-pointerpos = "left"] #timeLeft {
+	display: none;
 }
 
 button {

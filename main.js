@@ -11,8 +11,94 @@ function tick () {
 	var minutes = d.getMinutes().toString().padStart(2, "0");
 	timeView.textContent = hours + ":" + minutes;
 	
+	// time left/time since views
+	var currentPeriod = getCurrentPeriod();
+	if (currentPeriod) {
+		timePeriod.textContent = currentPeriod.name;
+		timeOver.textContent = msToTimeDiff(d - currentPeriod.starts, Math.ceil) + " over";
+		timeLeft.textContent = msToTimeDiff(currentPeriod.ends - d, Math.floor) + " left";
+	} else {
+		timePeriod.textContent = "";
+		timeOver.textContent = "";
+		timeLeft.textContent = "";
+	}
+	
 	// to next tick
 	requestAnimationFrame(tick);
+}
+
+// left 25% of screen to show time over, right 75% to show time left (more common)
+window.addEventListener("mousemove", function (e) {
+	var percentAcross = (e.clientX / window.innerWidth * 100).toFixed();
+	if (percentAcross < 25) document.body.dataset.pointerpos = "left";
+	else if (percentAcross > 75) document.body.dataset.pointerpos = "right";
+	else document.body.dataset.pointerpos = "center";
+});
+
+function getCurrentPeriod () {
+	if (lastSavedSchedule === null) return null;
+	var d = new Date();
+	var today = 1 << d.getDay();
+	for (let i = 0; i < lastSavedSchedule.length; i++) {
+		let currentSchedule = lastSavedSchedule[i];
+		if (!(currentSchedule.days & today)) break;
+		for (let j = 0; j < currentSchedule.periods.length; j++) {
+			let period = currentSchedule.periods[j];
+			let periodStart = timeBitToDate(period.starts);
+			let periodEnd = timeBitToDate(period.ends);
+			if ((periodStart <= d) && (d <= periodEnd)) {
+				return {
+					"name": period.name,
+					"starts": periodStart,
+					"ends": periodEnd,
+				};
+			}
+		}
+	}
+	return null;
+}
+
+function msToTimeDiff (ms, f) {
+	var timeSeconds = (f ? f : Math.round)(ms / 1000);
+	var outComponents = [];
+	var forceAllNext = false;
+	if (forceAllNext || (timeSeconds >= 3600)) {
+		outComponents.push(Math.floor(timeSeconds / 3600).toString());
+		timeSeconds %= 3600;
+		forceAllNext = true;
+	}
+	if (forceAllNext || (timeSeconds >= 60)) {
+		outComponents.push(Math.floor(timeSeconds / 60).toString());
+		timeSeconds %= 60;
+		forceAllNext = true;
+	}
+	outComponents.push(timeSeconds.toString());
+	if (outComponents.length > 2) {
+		outComponents[1] = outComponents[1].padStart(2, "0");
+	}
+	if (outComponents.length > 1) {
+		let lastIndex = outComponents.length - 1;
+		outComponents[lastIndex] = outComponents[lastIndex].padStart(2, "0");
+		return outComponents.join(":");
+	} else {
+		return outComponents[0] + "s";
+	}
+}
+
+function pad0 (original) {
+	return original.toString().padStart(2, "0");
+}
+
+function timeBitToDate (timeBit) {
+	var targetDate = new Date();
+	var bits = timeBit.split(":");
+	var hours = parseInt(bits[0]);
+	var minutes = parseInt(bits[1]);
+	targetDate.setHours(hours);
+	targetDate.setMinutes(minutes);
+	targetDate.setSeconds(0);
+	targetDate.setMilliseconds(0);
+	return targetDate;
 }
 
 // page visibility management
@@ -32,7 +118,7 @@ exitScheduleView.addEventListener("click", function () {
 	var unsavedChangesExist = recalcUnsavedChanges();
 	if (unsavedChangesExist) {
 		if (confirm("You have unsaved changes - exiting will delete them! Are you sure?")) {
-			setCurrentSchedules(JSON.parse(lastSavedSchedule));
+			setCurrentSchedules(lastSavedSchedule);
 			recalcUnsavedChanges();
 			setShow("showMain");
 		}
@@ -134,13 +220,13 @@ function addScheduleBlock () {
 }
 
 var daysBitmap = {
-	"sunday": 64,
-	"monday": 32,
-	"tuesday": 16,
+	"sunday": 1,
+	"monday": 2,
+	"tuesday": 4,
 	"wednesday": 8,
-	"thursday": 4,
-	"friday": 2,
-	"saturday": 1,
+	"thursday": 16,
+	"friday": 32,
+	"saturday": 64,
 };
 
 function currentSchedulesToJSON () {
@@ -198,9 +284,8 @@ function setCurrentSchedules (schedules) {
 }
 var lastSavedSchedule = null;
 function saveState () {
-	var schedulesJSONified = currentSchedulesToJSON();
-	lastSavedSchedule = JSON.stringify(schedulesJSONified);
-	localforage.setItem("savedSchedules", schedulesJSONified);
+	lastSavedSchedule = currentSchedulesToJSON();
+	localforage.setItem("savedSchedules", lastSavedSchedule);
 	unsavedChanges.className = "";
 }
 
@@ -208,7 +293,8 @@ function saveState () {
 localforage.getItem("savedSchedules").then(function (savedSchedules) {
 	if (!savedSchedules) return;
 	setCurrentSchedules(savedSchedules);
-	lastSavedSchedule = JSON.stringify(savedSchedules);
+	lastSavedSchedule = savedSchedules;
+	recalcUnsavedChanges();
 });
 
 function recalcUnsavedChanges () {
@@ -220,7 +306,7 @@ function recalcUnsavedChanges () {
 		scheduleBtn.innerHTML = "+ Add Schedule";
 	}
 	var schedulesStr = JSON.stringify(currentSchedules);
-	var unsavedChangesExist = (schedulesStr !== lastSavedSchedule);
+	var unsavedChangesExist = (schedulesStr !== JSON.stringify(lastSavedSchedule));
 	unsavedChanges.className = (unsavedChangesExist ? "": "hidden");
 	return unsavedChangesExist;
 }
