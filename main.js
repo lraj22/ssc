@@ -33,7 +33,7 @@ window.addEventListener("mousemove", function (e) {
 });
 
 // page visibility management
-var showModes = ["showMain", "showSchedule"];
+var showModes = ["showMain", "showSchedule", "showSettings"];
 function setShow (mode) {
 	for (var index in showModes) {
 		document.body.classList.remove(showModes[index]);
@@ -46,7 +46,12 @@ scheduleBtn.addEventListener("click", function () {
 	if (!scheduleContainer.childElementCount) addScheduleBlock();
 });
 
-exitScheduleView.addEventListener("click", function () {
+editSchedulesIcon.addEventListener("click", function () {
+	setShow("showSchedule");
+	if (!scheduleContainer.childElementCount) addScheduleBlock();
+});
+
+function exitScheduleViewAction() {
 	var unsavedChangesExist = recalcUnsavedChanges();
 	if (unsavedChangesExist) {
 		if (confirm("You have unsaved changes - exiting will delete them! Are you sure?")) {
@@ -55,7 +60,8 @@ exitScheduleView.addEventListener("click", function () {
 			setShow("showMain");
 		}
 	} else setShow("showMain");
-});
+}
+exitScheduleView.addEventListener("click", exitScheduleViewAction);
 
 saveSchedule.addEventListener("click", function () {
 	saveState();
@@ -154,5 +160,16 @@ copySchedulesLink.addEventListener("click", function () {
 		console.error(error);
 	});
 });
+
+// settings
+settingsIcon.addEventListener("click", function () {
+	setShow("showSettings");
+});
+
+closeSettingsIcon.addEventListener("click", function () {
+	setShow("showMain");
+});
+
+closeSchedulesIcon.addEventListener("click", exitScheduleViewAction);
 
 requestAnimationFrame(tick);

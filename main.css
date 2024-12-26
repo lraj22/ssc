@@ -69,6 +69,24 @@ button {
 	box-shadow: inset 0 -0.6em 0 -0.3em rgba(0, 0, 0, 0.2);
 }
 
+button:disabled {
+	opacity: 0.5!important;
+	cursor: not-allowed!important;
+}
+
+button.btnClean {
+	padding: 0.3em 0.6em;
+	background-color: black;
+	border: none;
+	outline: none;
+	color: white;
+	cursor: pointer;
+	border-radius: 4px;
+	user-select: none;
+	box-sizing: border-box;
+	box-shadow: unset;
+}
+
 button.largeBtn {
 	font-size: 1.2vw;
 }
@@ -78,7 +96,12 @@ button:active {
 	box-shadow: inset 0 -0.55em 0 -0.3em rgba(0, 0, 0, 0.2);
 }
 
-#scheduleView {
+button.btnClean:active {
+	top: unset;
+	box-shadow: unset;
+}
+
+#scheduleView, #settingsView {
 	display: none;
 	padding: 2em;
 	width: 600px;
@@ -134,7 +157,7 @@ input[type="text"] {
 	width: 100%;
 }
 
-input, button {
+#scheduleView input, #scheduleView button, #scheduleBtn {
 	margin-top: 0.5em;
 }
 
@@ -226,6 +249,77 @@ input[type="text"]:focus {
 .hidden {
 	display: none;
 }
+
+.schedulesExist #scheduleBtn {
+	display: none;
+}
+
+#editSchedulesIcon {
+	display: none;
+}
+
+.schedulesExist #editSchedulesIcon {
+	display: unset;
+}
+
+#iconMenu {
+	position: fixed;
+	top: 0%;
+	right: 0%;
+	padding: 1em;
+	width: 100%;
+	text-align: right;
+	display: none;
+	user-select: none;
+}
+
+#iconMenu .material-symbols-outlined {
+	font-size: 1.4em;
+	margin-left: 0.3em;
+	transition: all 200ms;
+}
+
+#iconMenu .material-symbols-outlined#editSchedulesIcon {
+	background-color: #117711;
+	border: none;
+	outline: none;
+	position: relative;
+	border-radius: 4px;
+}
+
+#iconMenu .material-symbols-outlined#editSchedulesIcon:hover {
+	background-color: #119911;
+}
+
+#iconMenu .material-symbols-outlined:hover {
+	background-color: #222222;
+}
+
+#iconMenu .material-symbols-outlined:active {
+	background-color: #0066ff!important;
+}
+
+.showMain #iconMenu {
+	display: unset;
+}
+
+#closeSettingsIcon, #closeSchedulesIcon {
+	position: fixed;
+	top: 0%;
+	right: 0%;
+	transform: translate(-50%, 50%);
+	cursor: pointer;
+}
+
+.material-symbols-outlined {
+	display: none;
+}
+
+.materialSymbolsLoaded .material-symbols-outlined {
+	display: unset;
+}
+
+body.showSettings #settingsView { display: block; }
 
 #uploadFileInput {
 	display: none;
