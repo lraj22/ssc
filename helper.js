@@ -8,6 +8,7 @@ onloadCSS(
 	loadCSS("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block"),
 	function () {
 		document.body.classList.add("materialSymbolsLoaded");
+		loaded();
 	}
 );
 
@@ -44,6 +45,7 @@ var defaultSettings = {
 	"theme": "dark",
 };
 var settings = cloneObj(settings);
+var loadFlags = 0;
 var _ = ""; // ${} placeholder
 
 // section: functions that modify the schedule
@@ -417,4 +419,13 @@ function addObj (original, addme) {
 		}
 	}
 	return combined;
+}
+
+// section: loading manager
+function loaded () {
+	loadFlags++;
+	// waiting for 2 flags: window.onload and onloadCSS
+	if (loadFlags >= 2) {
+		loadingScreen.className = "exitDown";
+	}
 }

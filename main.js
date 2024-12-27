@@ -184,3 +184,7 @@ settingTheme.addEventListener("input", function () {
 });
 
 requestAnimationFrame(tick);
+
+window.addEventListener("load", function () {
+	loaded();
+});
