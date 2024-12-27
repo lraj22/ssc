@@ -1,6 +1,26 @@
+:root {
+	--theme-active: #0066ff;
+	--theme-info: #0066ff;
+	--theme-action: #117711;
+	--theme-danger: #771111;
+}
+
+[data-theme="dark"] {
+	--theme-bg: black;
+	--theme-fg: white;
+	--theme-contrasting-bg: white;
+}
+
+[data-theme="purple"] {
+	--theme-bg: mistyrose;
+	--theme-fg: blueviolet;
+	--theme-contrasting-bg: black;
+	--theme-danger: #bb1111;
+}
+
 html, body {
-	background-color: black;
-	color: white;
+	background-color: var(--theme-bg);
+	color: var(--theme-contrasting-bg);
 	margin: 0;
 	width: 100vw;
 	height: 100vh;
@@ -20,6 +40,7 @@ html, body {
 }
 
 #mainDisplay {
+	color: var(--theme-fg);
 	display: none;
 }
 body.showMain #mainDisplay { display: block; }
@@ -58,7 +79,7 @@ body.showMain #mainDisplay { display: block; }
 
 button {
 	padding: 0.7em 1em;
-	background-color: #117711;
+	background-color: var(--theme-action);
 	border: none;
 	outline: none;
 	position: relative;
@@ -85,6 +106,7 @@ button.btnClean {
 	user-select: none;
 	box-sizing: border-box;
 	box-shadow: unset;
+	margin-top: unset;
 }
 
 button.largeBtn {
@@ -132,7 +154,7 @@ body.showSchedule #scheduleView { display: block; }
 }
 
 .scheduleBlock {
-	border: 1px dashed white;
+	border: 1px dashed var(--theme-fg);
 	padding: 1em;
 	margin-bottom: 1em;
 }
@@ -150,19 +172,23 @@ input[type="text"] {
 	background: transparent;
 	font-size: 1.2vw;
 	border: none;
-	border-bottom: 1px solid white;
+	border-bottom: 1px solid var(--theme-contrasting-bg);
 	transition: all 250ms;
-	color: white;
+	color: var(--theme-fg);
 	outline: none;
 	width: 100%;
 }
 
-#scheduleView input, #scheduleView button, #scheduleBtn {
+input[type="checkbox"] {
+	accent-color: var(--theme-fg);
+}
+
+input, button, select {
 	margin-top: 0.5em;
 }
 
 input[type="text"]:focus {
-	border-bottom-color: #2244ff;
+	border-bottom-color: var(--theme-active);
 }
 
 .period {
@@ -211,15 +237,15 @@ input[type="text"]:focus {
 }
 
 .btnInfo {
-	background-color: #0066ff;
+	background-color: var(--theme-info);
 }
 
 .textDanger {
-	color: #771111;
+	color: var(--theme-danger);
 }
 
 .btnDanger {
-	background-color: #771111;
+	background-color: var(--theme-danger);
 }
 
 .btnSmall {
@@ -280,7 +306,7 @@ input[type="text"]:focus {
 }
 
 #iconMenu .material-symbols-outlined#editSchedulesIcon {
-	background-color: #117711;
+	background-color: var(--theme-action);
 	border: none;
 	outline: none;
 	position: relative;
@@ -288,15 +314,15 @@ input[type="text"]:focus {
 }
 
 #iconMenu .material-symbols-outlined#editSchedulesIcon:hover {
-	background-color: #119911;
+	filter: brightness(120%);
 }
 
 #iconMenu .material-symbols-outlined:hover {
 	background-color: #222222;
 }
 
-#iconMenu .material-symbols-outlined:active {
-	background-color: #0066ff!important;
+#iconMenu .material-symbols-outlined:active:not(:disabled) {
+	background-color: var(--theme-active)!important;
 }
 
 .showMain #iconMenu {
@@ -327,7 +353,8 @@ body.showSettings #settingsView { display: block; }
 
 #shareMenu {
 	border-radius: 4px;
-	background-color: #222222;
+	background-color: var(--theme-fg);
+	color: var(--theme-bg);
 	padding: 0.5em;
 	margin-bottom: 1em;
 }

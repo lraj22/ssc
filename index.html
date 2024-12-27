@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-US">
+<html lang="en-US" data-theme="dark">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,8 +47,12 @@
 		</div>
 		<div id="settingsView">
 			<h1>Settings</h1>
-			<p>Customize The School Schedule Clock to your liking!</p>
-			<p>Settings coming soon.</p>
+			<p>Customize The School Schedule Clock!</p>
+			<label for="settingTheme" class="schLabel">Theme colors</label>
+			<select id="settingTheme" data-setting-name="theme">
+				<option value="dark">Dark mode (default)</option>
+				<option value="purple">Exotic purple</option>
+			</select>
 			<div id="closeSettingsIcon" class="material-symbols-outlined">close</div>
 		</div>
 		<div id="unsavedChanges" class="hidden">You have unsaved changes.</div>

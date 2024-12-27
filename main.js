@@ -162,6 +162,12 @@ copySchedulesLink.addEventListener("click", function () {
 });
 
 // settings
+localforage.getItem("settings").then(function (settings) {
+	if (!settings) return;
+	applySettings(settings);
+	updateSettings();
+});
+
 settingsIcon.addEventListener("click", function () {
 	setShow("showSettings");
 });
@@ -171,5 +177,10 @@ closeSettingsIcon.addEventListener("click", function () {
 });
 
 closeSchedulesIcon.addEventListener("click", exitScheduleViewAction);
+
+settingTheme.addEventListener("input", function () {
+	document.documentElement.setAttribute("data-theme", this.value);
+	updateSettings();
+});
 
 requestAnimationFrame(tick);

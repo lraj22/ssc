@@ -40,6 +40,10 @@ var daysBitmap = {
 var timeToCharacter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-".split("");
 var usingURL = false;
 var lastSavedSchedules = null;
+var defaultSettings = {
+	"theme": "dark",
+};
+var settings = cloneObj(settings);
 var _ = ""; // ${} placeholder
 
 // section: functions that modify the schedule
@@ -305,14 +309,43 @@ function base64ToUserText (base64) {
 	}));
 }
 
+// section: settings functions
+function applySettings (settingsToApply) {
+	settings = cloneObj(settingsToApply);
+	var appliedSettings = addObj(defaultSettings, settingsToApply);
+	Object.keys(appliedSettings).forEach(function (setting) {
+		var settingEl = document.querySelector(`[data-setting-name="${setting}"]`);
+		if (!settingEl) {
+			console.warn(`Could not apply setting ${JSON.stringify(setting)} (no setting element).`);
+			return;
+		}
+		settingEl.value = appliedSettings[setting];
+	});
+	reprocessSettings();
+}
+function reprocessSettings () {
+	if (settings.theme) {
+		document.documentElement.setAttribute("data-theme", settings.theme);
+	}
+}
+function updateSettings () {
+	var updatedSettings = {};
+	document.querySelectorAll("[data-setting-name]").forEach(function (settingEl) {
+		updatedSettings[settingEl.getAttribute("data-setting-name")] = settingEl.value;
+	});
+	settings = addObj(defaultSettings, cloneObj(updatedSettings));
+	localforage.setItem("settings", settings);
+	reprocessSettings();
+}
+
 // section: functions used by tick() and general others
 function getCurrentPeriod () {
 	if (lastSavedSchedules === null) return null;
 	var d = new Date();
-	var today = 1 << d.getDay();
+	var today = 1 << d.getDay(); // bitwise shift left (matches daysBitmap)
 	for (let i = 0; i < lastSavedSchedules.length; i++) {
 		let currentSchedule = lastSavedSchedules[i];
-		if (!(currentSchedule.days & today)) break;
+		if (!(currentSchedule.days & today)) break; // bitwise AND (checks if dayBitmap has day enabled)
 		for (let j = 0; j < currentSchedule.periods.length; j++) {
 			let period = currentSchedule.periods[j];
 			let periodStart = timeBitToDate(period.starts);
@@ -360,3 +393,28 @@ function pad0 (original) {
 	return original.toString().padStart(2, "0");
 }
 
+// cloneObj function taken from https://stackoverflow.com/a/7574273
+function cloneObj (obj) {
+	if (obj == null || typeof (obj) != 'object') {
+		return obj;
+	}
+
+	var clone = new obj.constructor();
+	for (var key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			clone[key] = cloneObj(obj[key]);
+		}
+	}
+
+	return clone;
+}
+function addObj (original, addme) {
+	var combined = cloneObj(original);
+	if (typeof addme !== "object") return combined;
+	for (var key in addme) {
+		if (addme.hasOwnProperty(key)) {
+			combined[key] = addme[key];
+		}
+	}
+	return combined;
+}
