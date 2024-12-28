@@ -31,6 +31,9 @@ var defaultSettings = {
 	"theme": "dark",
 };
 var settings = cloneObj(settings);
+var stopwatchData = {
+	"total": 0,
+};
 var loadFlags = 0;
 var _ = ""; // ${} placeholder
 
@@ -326,6 +329,39 @@ function updateSettings () {
 	reprocessSettings();
 }
 
+// stopwatch
+function makeDraggable(element, dragger) {
+	var posX = 0, posY = 0, mouseX = 0, mouseY = 0;
+	dragger.addEventListener("mousedown", function (e) {
+		e.preventDefault();
+		document.body.classList.add("dragging");
+		mouseX = e.clientX;
+		mouseY = e.clientY;
+		document.onmouseup = function () {
+			document.body.classList.remove("dragging");
+			document.onmouseup = null;
+			document.onmousemove = null;
+		};
+		document.onmousemove = elementDrag;
+	});
+
+	function elementDrag(e) {
+		e.preventDefault();
+		posX = mouseX - e.clientX;
+		posY = mouseY - e.clientY;
+		mouseX = e.clientX;
+		mouseY = e.clientY;
+		element.style.top = (element.offsetTop - posY) + "px";
+		element.style.left = (element.offsetLeft - posX) + "px";
+	}
+}
+
+function adjustFontSize () {
+	const position = stopwatch.getBoundingClientRect();
+	const newFontSize = Math.min(position.width, position.height) * 0.225; // magic number (scale size)
+	stopwatchTime.style.fontSize = newFontSize + "px";
+}
+
 // section: functions used by tick() and general others
 function getCurrentPeriod () {
 	if (lastSavedSchedules === null) return null;
@@ -350,7 +386,7 @@ function getCurrentPeriod () {
 	return null;
 }
 
-function msToTimeDiff (ms, f) {
+function msToTimeDiff (ms, f, isStopwatch) {
 	var timeSeconds = (f ? f : Math.round)(ms / 1000);
 	var outComponents = [];
 	var forceAllNext = false;
@@ -364,16 +400,16 @@ function msToTimeDiff (ms, f) {
 		timeSeconds %= 60;
 		forceAllNext = true;
 	}
-	outComponents.push(timeSeconds.toString());
+	outComponents.push(isStopwatch ? timeSeconds.toFixed(2) : timeSeconds.toString());
 	if (outComponents.length > 2) {
 		outComponents[1] = outComponents[1].padStart(2, "0");
 	}
 	if (outComponents.length > 1) {
 		let lastIndex = outComponents.length - 1;
-		outComponents[lastIndex] = outComponents[lastIndex].padStart(2, "0");
+		outComponents[lastIndex] = outComponents[lastIndex].padStart(isStopwatch ? 5 : 2, "0");
 		return outComponents.join(":");
 	} else {
-		return outComponents[0] + "s";
+		return outComponents[0] + (isStopwatch ? "" : "s");
 	}
 }
 

@@ -6,6 +6,7 @@
 		<meta name="description" content="Tracking bells, breaks, and beyond!">
 		<title>The School Schedule Clock</title>
 		<style>
+			/* these styles are here because the loading screen shouldn't require anything to have loaded first */
 			#loadingScreen {
 				width: 100vw;
 				height: 100vh;
@@ -72,19 +73,28 @@
 		</div>
 		<div id="iconMenu">
 			<button type="button" id="editSchedulesIcon" class="btnClean material-symbols-outlined" title="Edit schedules">edit</button>
-			<button type="button" disabled id="stopwatchIcon" class="btnClean material-symbols-outlined" title="Open stopwatch">timer</button>
+			<button type="button" id="stopwatchIcon" class="btnClean material-symbols-outlined" title="Open stopwatch">timer</button>
 			<button type="button" disabled id="alarmIcon" class="btnClean material-symbols-outlined" title="Open alarm">alarm</button>
 			<button type="button" id="settingsIcon" class="btnClean material-symbols-outlined" title="Open settings">settings</button>
 		</div>
 		<div id="settingsView">
 			<h1>Settings</h1>
 			<p>Customize The School Schedule Clock!</p>
-			<label for="settingTheme" class="schLabel">Theme colors</label>
+			<label for="settingTheme" class="schLabel">Theme</label>
 			<select id="settingTheme" data-setting-name="theme">
 				<option value="dark">Dark mode (default)</option>
 				<option value="purple">Exotic purple</option>
 			</select>
 			<div id="closeSettingsIcon" class="material-symbols-outlined">close</div>
+		</div>
+		<div id="stopwatch" class="hidden">
+			<div id="stopwatchDrag" class="material-symbols-outlined">drag_handle</div>
+			<div id="stopwatchTime">0.00</div>
+			<div id="stopwatchButtons">
+				<button type="button" id="stopwatchBtnPlay" class="btnClean material-symbols-outlined">play_arrow</button>
+				<button type="button" id="stopwatchBtnPause" class="btnClean material-symbols-outlined hidden">pause</button>
+				<button type="button" id="stopwatchBtnRestart" class="btnClean material-symbols-outlined hidden">replay</button>
+			</div>
 		</div>
 		<div id="unsavedChanges" class="hidden">You have unsaved changes.</div>
 		<div id="loadingScreen">Loading...</div>

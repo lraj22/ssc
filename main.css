@@ -9,12 +9,14 @@
 	--theme-bg: black;
 	--theme-fg: white;
 	--theme-contrasting-bg: white;
+	--theme-matching-bg: #222222;
 }
 
 [data-theme="purple"] {
 	--theme-bg: mistyrose;
-	--theme-fg: blueviolet;
+	--theme-fg: blueviolet; /* oklch(94.0012% 0.030076 25.2812); */
 	--theme-contrasting-bg: black;
+	--theme-matching-bg: #f2d7d4; /* oklch(90.0012% 0.030076 25.2812); */
 	--theme-danger: #bb1111;
 }
 
@@ -97,10 +99,9 @@ button:disabled {
 
 button.btnClean {
 	padding: 0.3em 0.6em;
-	background-color: black;
 	border: none;
 	outline: none;
-	color: white;
+	color: var(--theme-fg);
 	cursor: pointer;
 	border-radius: 4px;
 	user-select: none;
@@ -240,6 +241,11 @@ input[type="text"]:focus {
 	background-color: var(--theme-info);
 }
 
+.btnActive {
+	background-color: var(--theme-fg)!important;
+	color: var(--theme-bg)!important;
+}
+
 .textDanger {
 	color: var(--theme-danger);
 }
@@ -273,7 +279,7 @@ input[type="text"]:focus {
 }
 
 .hidden {
-	display: none;
+	display: none!important;
 }
 
 .schedulesExist #scheduleBtn {
@@ -302,11 +308,14 @@ input[type="text"]:focus {
 #iconMenu .material-symbols-outlined {
 	font-size: 1.4em;
 	margin-left: 0.3em;
+	/* background-color: black; */
+	background-color: var(--theme-bg);
 	transition: all 200ms;
 }
 
 #iconMenu .material-symbols-outlined#editSchedulesIcon {
 	background-color: var(--theme-action);
+	color: white;
 	border: none;
 	outline: none;
 	position: relative;
@@ -317,12 +326,16 @@ input[type="text"]:focus {
 	filter: brightness(120%);
 }
 
-#iconMenu .material-symbols-outlined:hover {
-	background-color: #222222;
+#iconMenu .material-symbols-outlined:hover:not(.btnActive) {
+	background-color: var(--theme-matching-bg);
 }
 
 #iconMenu .material-symbols-outlined:active:not(:disabled) {
 	background-color: var(--theme-active)!important;
+}
+
+#iconMenu .btnActive:hover {
+	filter: brightness(120%);
 }
 
 .showMain #iconMenu {
@@ -355,4 +368,70 @@ body.showSettings #settingsView { display: block; }
 	color: lightsteelblue;
 	text-decoration: underline;
 	cursor: pointer;
+}
+
+#stopwatch {
+	background-color: var(--theme-bg);
+	border: 2px solid rgba(127, 127, 127, 0.5);
+	border-radius: 4px;
+	width: max-content;
+	padding: 0.5em;
+	padding-top: 0;
+	position: fixed;
+	top: 10%;
+	right: 1em;
+	resize: both;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	min-width: 100px;
+	min-height: 50px;
+	width: 200px;
+}
+
+#stopwatchDrag {
+	font-size: 1em;
+	text-align: center;
+	width: 100%;
+	cursor: grab;
+	user-select: none;
+}
+
+.dragging {
+	cursor: grabbing!important;
+}
+
+#stopwatchTime {
+	width: 100%;
+	background-color: var(--theme-matching-bg);
+	color: var(--theme-contrasting-bg);
+	padding: 0.5em;
+	box-sizing: border-box;
+	margin-bottom: 8px;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#stopwatchButtons {
+	display: flex;
+	gap: 0.5em;
+}
+
+#stopwatchButtons button {
+	border: 1px solid var(--theme-fg);
+	flex: 1;
+	background-color: var(--theme-bg);
+	color: var(--theme-contrasting-bg);
+	transition: all 100ms;
+}
+
+#stopwatchButtons button:hover {
+	background-color: var(--theme-matching-bg);
+}
+
+#stopwatchButtons button:active {
+	background-color: var(--theme-fg);
+	color: var(--theme-bg);
 }

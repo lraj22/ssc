@@ -20,6 +20,15 @@ function tick () {
 		timeLeft.textContent = "";
 	}
 	
+	// stopwatch
+	if (stopwatchData.running) {
+		let timePassed = stopwatchData.total + (performance.now() - stopwatchData.startTime);
+		let timePassedStr = msToTimeDiff(Math.floor(timePassed), function (seconds) {
+			return parseFloat(seconds.toFixed(2));
+		}, true);
+		stopwatchTime.textContent = timePassedStr;
+	}
+	
 	// to next tick
 	requestAnimationFrame(tick);
 }
@@ -182,6 +191,43 @@ settingTheme.addEventListener("input", function () {
 	document.documentElement.setAttribute("data-theme", this.value);
 	updateSettings();
 });
+
+// stopwatch
+stopwatchIcon.addEventListener("click", function () {
+	stopwatchIcon.classList.toggle("btnActive");
+	stopwatch.classList.toggle("hidden");
+});
+
+stopwatchBtnPlay.addEventListener("click", function () {
+	stopwatchData.startTime = performance.now();
+	stopwatchData.running = true;
+	stopwatchBtnPlay.classList.toggle("hidden", true);
+	stopwatchBtnPause.classList.toggle("hidden", false);
+	stopwatchBtnRestart.classList.toggle("hidden", false);
+});
+
+stopwatchBtnPause.addEventListener("click", function () {
+	stopwatchData.total += performance.now() - stopwatchData.startTime;
+	stopwatchData.running = false;
+	stopwatchBtnPause.classList.toggle("hidden", true);
+	stopwatchBtnPlay.classList.toggle("hidden", false);
+});
+
+stopwatchBtnRestart.addEventListener("click", function () {
+	stopwatchData.total = 0;
+	stopwatchData.running = false;
+	stopwatchTime.textContent = "0.00";
+	stopwatchBtnPlay.classList.toggle("hidden", false);
+	stopwatchBtnPause.classList.toggle("hidden", true);
+	stopwatchBtnRestart.classList.toggle("hidden", true);
+});
+
+new ResizeObserver(function () {
+	adjustFontSize();
+}).observe(stopwatch);
+adjustFontSize();
+
+makeDraggable(stopwatch, stopwatchDrag);
 
 requestAnimationFrame(tick);
 
