@@ -337,14 +337,6 @@ input[type="text"]:focus {
 	cursor: pointer;
 }
 
-.material-symbols-outlined {
-	display: none;
-}
-
-.materialSymbolsLoaded .material-symbols-outlined {
-	display: unset;
-}
-
 body.showSettings #settingsView { display: block; }
 
 #uploadFileInput {
