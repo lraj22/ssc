@@ -14,9 +14,10 @@
 
 [data-theme="purple"] {
 	--theme-bg: mistyrose;
-	--theme-fg: blueviolet; /* oklch(94.0012% 0.030076 25.2812); */
+	--theme-fg: blueviolet; /* oklch(94.0012% 0.030076 25.2812) */
 	--theme-contrasting-bg: black;
-	--theme-matching-bg: #f2d7d4; /* oklch(90.0012% 0.030076 25.2812); */
+	--theme-matching-bg: #f2d7d4; /* oklch(90.0012% 0.030076 25.2812) */
+	--theme-active: rebeccapurple;
 	--theme-danger: #bb1111;
 }
 
@@ -332,6 +333,7 @@ input[type="text"]:focus {
 
 #iconMenu .material-symbols-outlined:active:not(:disabled) {
 	background-color: var(--theme-active)!important;
+	color: var(--theme-matching-bg);
 }
 
 #iconMenu .btnActive:hover {
