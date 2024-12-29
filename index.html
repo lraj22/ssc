@@ -22,20 +22,19 @@
 			}
 			
 			.exitDown {
-				animation-name: screenExitDown;
-				animation-duration: 750ms;
-				animation-delay: 250ms;
-				animation-fill-mode: forwards;
+				animation: screenExitDown 750ms 250ms forwards;
 			}
 
 			@keyframes screenExitDown {
-				from {
-					height: 100vh;
-				} to {
-					height: 0;
-				}
+				from { height: 100vh; }
+				to { height: 0; }
 			}
 		</style>
+		<link rel="icon" href="./favicon.ico" sizes="32x32">
+		<link rel="icon" type="image/svg+xml" href="./favicons/favicon-vector.svg">
+		<link rel="apple-touch-icon" sizes="180x180" href="./favicons/favicon-180-maskable.png">
+		<meta name="theme-color" content="#117711">
+		<link rel="manifest" href="./manifest.webmanifest">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
 		<link rel="stylesheet" href="./main.css">
 	</head>

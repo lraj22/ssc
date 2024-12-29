@@ -312,3 +312,7 @@ requestAnimationFrame(tick);
 window.addEventListener("load", function () {
 	loaded();
 });
+
+if ("serviceWorker" in navigator) {
+	navigator.serviceWorker.register("./sw.js");
+}
