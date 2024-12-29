@@ -13,8 +13,8 @@
 }
 
 [data-theme="purple"] {
-	--theme-bg: mistyrose;
-	--theme-fg: blueviolet; /* oklch(94.0012% 0.030076 25.2812) */
+	--theme-bg: mistyrose; /* oklch(94.0012% 0.030076 25.2812) */
+	--theme-fg: blueviolet;
 	--theme-contrasting-bg: black;
 	--theme-matching-bg: #f2d7d4; /* oklch(90.0012% 0.030076 25.2812) */
 	--theme-active: rebeccapurple;
@@ -372,7 +372,7 @@ body.showSettings #settingsView { display: block; }
 	cursor: pointer;
 }
 
-#stopwatch {
+#stopwatch, #timer {
 	background-color: var(--theme-bg);
 	border: 2px solid rgba(127, 127, 127, 0.5);
 	border-radius: 4px;
@@ -380,8 +380,6 @@ body.showSettings #settingsView { display: block; }
 	padding: 0.5em;
 	padding-top: 0;
 	position: fixed;
-	top: 10%;
-	right: 1em;
 	resize: both;
 	overflow: hidden;
 	display: flex;
@@ -391,7 +389,17 @@ body.showSettings #settingsView { display: block; }
 	width: 200px;
 }
 
-#stopwatchDrag {
+#stopwatch {
+	top: 10%;
+	right: 1em;
+}
+
+#timer {
+	top: 30%;
+	right: 1em;
+}
+
+#stopwatchDrag, #timerDrag {
 	font-size: 1em;
 	text-align: center;
 	width: 100%;
@@ -403,25 +411,28 @@ body.showSettings #settingsView { display: block; }
 	cursor: grabbing!important;
 }
 
-#stopwatchTime {
+#stopwatchTime, #timerTime {
 	width: 100%;
 	background-color: var(--theme-matching-bg);
 	color: var(--theme-contrasting-bg);
 	padding: 0.5em;
 	box-sizing: border-box;
+	margin-top: 0;
 	margin-bottom: 8px;
 	flex: 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	border: none;
+	text-align: center;
 }
 
-#stopwatchButtons {
+.widgetButtons {
 	display: flex;
 	gap: 0.5em;
 }
 
-#stopwatchButtons button {
+.widgetButtons button {
 	border: 1px solid var(--theme-fg);
 	flex: 1;
 	background-color: var(--theme-bg);
@@ -429,11 +440,11 @@ body.showSettings #settingsView { display: block; }
 	transition: all 100ms;
 }
 
-#stopwatchButtons button:hover {
+.widgetButtons button:hover {
 	background-color: var(--theme-matching-bg);
 }
 
-#stopwatchButtons button:active {
+.widgetButtons button:active {
 	background-color: var(--theme-fg);
 	color: var(--theme-bg);
 }

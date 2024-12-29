@@ -19,6 +19,7 @@
 				line-height: 100vh;
 				z-index: 1234569;
 				user-select: none;
+				display: none;
 			}
 			
 			.exitDown {
@@ -74,7 +75,7 @@
 		<div id="iconMenu">
 			<button type="button" id="editSchedulesIcon" class="btnClean material-symbols-outlined" title="Edit schedules">edit</button>
 			<button type="button" id="stopwatchIcon" class="btnClean material-symbols-outlined" title="Open stopwatch">timer</button>
-			<button type="button" disabled id="alarmIcon" class="btnClean material-symbols-outlined" title="Open alarm">alarm</button>
+			<button type="button" id="timerIcon" class="btnClean material-symbols-outlined" title="Open timer">hourglass</button>
 			<button type="button" id="settingsIcon" class="btnClean material-symbols-outlined" title="Open settings">settings</button>
 		</div>
 		<div id="settingsView">
@@ -90,10 +91,19 @@
 		<div id="stopwatch" class="hidden">
 			<div id="stopwatchDrag" class="material-symbols-outlined">drag_handle</div>
 			<div id="stopwatchTime">0.00</div>
-			<div id="stopwatchButtons">
+			<div class="widgetButtons">
 				<button type="button" id="stopwatchBtnPlay" class="btnClean material-symbols-outlined">play_arrow</button>
 				<button type="button" id="stopwatchBtnPause" class="btnClean material-symbols-outlined hidden">pause</button>
 				<button type="button" id="stopwatchBtnRestart" class="btnClean material-symbols-outlined hidden">replay</button>
+			</div>
+		</div>
+		<div id="timer" class="hidden">
+			<div id="timerDrag" class="material-symbols-outlined">drag_handle</div>
+			<input id="timerTime" value="10:00" placeholder="00:00:00">
+			<div class="widgetButtons">
+				<button type="button" id="timerBtnPlay" class="btnClean material-symbols-outlined">play_arrow</button>
+				<button type="button" id="timerBtnPause" class="btnClean material-symbols-outlined hidden">pause</button>
+				<button type="button" id="timerBtnRestart" class="btnClean material-symbols-outlined hidden">replay</button>
 			</div>
 		</div>
 		<div id="unsavedChanges" class="hidden">You have unsaved changes.</div>

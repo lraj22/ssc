@@ -20,13 +20,36 @@ function tick () {
 		timeLeft.textContent = "";
 	}
 	
-	// stopwatch
+	// stopwatch & timer
 	if (stopwatchData.running) {
 		let timePassed = stopwatchData.total + (performance.now() - stopwatchData.startTime);
 		let timePassedStr = msToTimeDiff(Math.floor(timePassed), function (seconds) {
 			return parseFloat(seconds.toFixed(2));
-		}, true);
+		}, 2);
 		stopwatchTime.textContent = timePassedStr;
+	}
+	if (timerData.running) {
+		let timeLeft = timerData.total - (performance.now() - timerData.startTime);
+		if (timeLeft <= 0) {
+			timeLeft = 0;
+			timerData.running = false;
+			timerData.total = 0;
+			timerTime.disabled = false;
+			timerBtnPlay.classList.toggle("hidden", true);
+			timerBtnPause.classList.toggle("hidden", true);
+			timerBtnRestart.classList.toggle("hidden", false);
+			timerEndedAudio = audios.timerEndHarp;
+			timerEndedAudio.play();
+		}
+		timeLeft = Math.floor(timeLeft);
+		let afterDigits = 0;
+		if (timeLeft <= 10e3) afterDigits = 1;
+		if (timeLeft < 5e3) afterDigits = 2;
+		if (timeLeft === 0) afterDigits = 0;
+		let timeLeftStr = msToTimeDiff(Math.floor(timeLeft), function (seconds) {
+			return afterDigits ? parseFloat(seconds.toFixed(afterDigits)) : Math.ceil(seconds);
+		}, afterDigits).replace("s", "");
+		timerTime.value = timeLeftStr;
 	}
 	
 	// to next tick
@@ -222,13 +245,68 @@ stopwatchBtnRestart.addEventListener("click", function () {
 	stopwatchBtnRestart.classList.toggle("hidden", true);
 });
 
-new ResizeObserver(function () {
-	adjustFontSize();
-}).observe(stopwatch);
-adjustFontSize();
+var resizer = new ResizeObserver(function (entries) {
+	entries.forEach(function (entry) {
+		let displayId = entry.target.id + "Time";
+		if (window[displayId]) {
+			adjustFontSize(window[displayId]);
+		}
+	});
+});
+resizer.observe(stopwatch);
+resizer.observe(timer);
+adjustFontSize(stopwatchTime);
+adjustFontSize(timerTime);
 
 makeDraggable(stopwatch, stopwatchDrag);
+makeDraggable(timer, timerDrag);
 
+// timer
+timerIcon.addEventListener("click", function () {
+	timerIcon.classList.toggle("btnActive");
+	timer.classList.toggle("hidden");
+});
+
+timerBtnPlay.addEventListener("click", function () {
+	timerData.startTime = performance.now();
+	timerData.running = true;
+	timerTime.disabled = true;
+	timerBtnPlay.classList.toggle("hidden", true);
+	timerBtnPause.classList.toggle("hidden", false);
+	timerBtnRestart.classList.toggle("hidden", false);
+});
+
+timerBtnPause.addEventListener("click", function () {
+	timerData.total -= performance.now() - timerData.startTime;
+	timerData.running = false;
+	timerTime.disabled = false;
+	timerBtnPause.classList.toggle("hidden", true);
+	timerBtnPlay.classList.toggle("hidden", false);
+});
+
+timerBtnRestart.addEventListener("click", function () {
+	timerData.total = timerData.from;
+	timerData.running = false;
+	timerTime.value = msToTimeDiff(timerData.from).replace("s", "");
+	timerTime.disabled = false;
+	stopAudio(timerEndedAudio);
+	timerBtnPlay.classList.toggle("hidden", false);
+	timerBtnPause.classList.toggle("hidden", true);
+	timerBtnRestart.classList.toggle("hidden", true);
+});
+
+timerTime.addEventListener("input", function () {
+	if (timerData.running) return;
+	if (timerData.total === 0) {
+		timerBtnPlay.classList.toggle("hidden", false);
+		timerBtnPause.classList.toggle("hidden", true);
+		timerBtnRestart.classList.toggle("hidden", true);
+		stopAudio(timerEndedAudio);
+	}
+	timerData.from = timerData.total = timeDiffToMs(timerTime.value);
+});
+
+// general
 requestAnimationFrame(tick);
 
 window.addEventListener("load", function () {

@@ -34,6 +34,12 @@ var settings = cloneObj(settings);
 var stopwatchData = {
 	"total": 0,
 };
+var timerData = {
+	"from": 10 * 60 * 1000,
+	"total": 10 * 60 * 1000,
+};
+var audios = {};
+var timerEndedAudio = null;
 var loadFlags = 0;
 var _ = ""; // ${} placeholder
 
@@ -329,7 +335,7 @@ function updateSettings () {
 	reprocessSettings();
 }
 
-// stopwatch
+// stopwatch & timer
 function makeDraggable(element, dragger) {
 	var posX = 0, posY = 0, mouseX = 0, mouseY = 0;
 	dragger.addEventListener("mousedown", function (e) {
@@ -356,10 +362,23 @@ function makeDraggable(element, dragger) {
 	}
 }
 
-function adjustFontSize () {
-	const position = stopwatch.getBoundingClientRect();
+function adjustFontSize (textElement) {
+	const position = textElement.parentElement.getBoundingClientRect();
 	const newFontSize = Math.min(position.width, position.height) * 0.225; // magic number (scale size)
-	stopwatchTime.style.fontSize = newFontSize + "px";
+	textElement.style.fontSize = newFontSize + "px";
+}
+
+function timeDiffToMs (timeDiff) {
+	var multipliers = [1e3, 60e3, 3600e3, 24 * 3600e3];
+	var parts = timeDiff.replace(/[^\d:.]/g, "").split(":").reverse().map(function (part, i) {
+		if (i) part = part.replaceAll(".", "");
+		let dotIndex = part.indexOf(".");
+		if (dotIndex !== -1) part = part.slice(0, dotIndex) + "." + part.slice(dotIndex).replaceAll(".", "");
+		return parseFloat(part || "0") || 0;
+	});
+	return parts.reduce(function (acc, curr, i) {
+		return acc + (curr * (multipliers[i] || 0));
+	}, 0);
 }
 
 // section: functions used by tick() and general others
@@ -386,7 +405,7 @@ function getCurrentPeriod () {
 	return null;
 }
 
-function msToTimeDiff (ms, f, isStopwatch) {
+function msToTimeDiff (ms, f, afterDigits) {
 	var timeSeconds = (f ? f : Math.round)(ms / 1000);
 	var outComponents = [];
 	var forceAllNext = false;
@@ -400,16 +419,16 @@ function msToTimeDiff (ms, f, isStopwatch) {
 		timeSeconds %= 60;
 		forceAllNext = true;
 	}
-	outComponents.push(isStopwatch ? timeSeconds.toFixed(2) : timeSeconds.toString());
+	outComponents.push(afterDigits ? timeSeconds.toFixed(afterDigits) : timeSeconds.toString());
 	if (outComponents.length > 2) {
 		outComponents[1] = outComponents[1].padStart(2, "0");
 	}
 	if (outComponents.length > 1) {
 		let lastIndex = outComponents.length - 1;
-		outComponents[lastIndex] = outComponents[lastIndex].padStart(isStopwatch ? 5 : 2, "0");
+		outComponents[lastIndex] = outComponents[lastIndex].padStart(afterDigits ? (3 + afterDigits) : 2, "0");
 		return outComponents.join(":");
 	} else {
-		return outComponents[0] + (isStopwatch ? "" : "s");
+		return outComponents[0] + (afterDigits ? "" : "s");
 	}
 }
 
@@ -441,6 +460,27 @@ function addObj (original, addme) {
 		}
 	}
 	return combined;
+}
+
+// section: audio
+function loadAudios () {
+	var audioBase = "./audio/";
+	var timerEndings = {
+		"timerEndHarp": "timer-end-harp.mp3",
+	};
+	Object.keys(timerEndings).forEach(function (audioId) {
+		var audioEl = new Audio(audioBase + timerEndings[audioId]);
+		audioEl.loop = true;
+		audios[audioId] = audioEl;
+	});
+}
+loadAudios();
+function stopAudio (audioHolder) {
+	if (audioHolder) {
+		audioHolder.pause();
+		audioHolder.currentTime = 0;
+		audioHolder = null;
+	}
 }
 
 // section: loading manager
