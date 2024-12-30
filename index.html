@@ -87,7 +87,22 @@
 				<option value="lucida">Lucida (default)</option>
 				<option value="cambria">Cambria</option>
 				<option value="monospace">Monospace</option>
-			</select>
+			</select><br><br>
+			<label for="settingTimerRing" class="schLabel">Timer ring sound</label>
+			<select id="settingTimerRing" data-setting-name="timerRing">
+				<option value="timerEndHarp">Harp (default)</option>
+				<option value="timerEndQuick">Quick</option>
+				<option value="silent">None (silent)</option>
+			</select><br><br>
+			<label for="settingTimerRingVolume" class="schLabel">Timer ring volume</label>
+			<input type="range" id="settingTimerRingVolume" data-setting-name="timerRingVolume" min="0" max="100" step="1" list="settingTimerRingVolumeMarkers" value="100">
+			<datalist id="settingTimerRingVolumeMarkers">
+				<option value="0" label="0%"></option>
+				<option value="25" label="25%"></option>
+				<option value="50" label="50%"></option>
+				<option value="75" label="75%"></option>
+				<option value="100" label="100%"></option>
+			</datalist>
 			<div id="closeSettingsIcon" class="material-symbols-outlined">close</div>
 		</div>
 		<div id="stopwatch" class="widget hidden">

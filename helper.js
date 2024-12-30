@@ -33,6 +33,8 @@ var defaultSettings = {
 	"themeBg": "dark",
 	"themeFg": "darkLight",
 	"themeFont": "lucida",
+	"timerRing": "harp",
+	"timerRingVolume": "100",
 };
 var settings = cloneObj(settings);
 var stopwatchData = {
@@ -43,7 +45,10 @@ var timerData = {
 	"total": 10 * 60 * 1000,
 };
 var audios = {};
-var timerEndedAudio = null;
+var audioTypes = {
+	"timerRing": "timerEndHarp",
+};
+var audiosCurrentlyPlaying = [];
 var loadFlags = 0;
 var _ = ""; // ${} placeholder
 
@@ -336,6 +341,15 @@ function reprocessSettings () {
 	if (settings.themeFont) {
 		document.documentElement.setAttribute("data-theme-font", settings.themeFont);
 	}
+	if (settings.timerRing) {
+		if ((audiosCurrentlyPlaying.includes("timerRing")) && (audioTypes.timerRing !== settings.timerRing)) {
+			audioSwitch("timerRing", settings.timerRing);
+		}
+		audioTypes.timerRing = settings.timerRing;
+	}
+	if (settings.timerRingVolume) {
+		setAudioVolume("timerRing", parseInt(settings.timerRingVolume) / 100);
+	}
 }
 function updateSettings () {
 	var updatedSettings = {};
@@ -477,22 +491,55 @@ function addObj (original, addme) {
 // section: audio
 function loadAudios () {
 	var audioBase = "./audio/";
-	var timerEndings = {
-		"timerEndHarp": "timer-end-harp.mp3",
+	var audioList = {
+		"silent": {
+			"slug": "silent.mp3",
+			"loop": true,
+		},
+		"timerEndHarp": {
+			"slug": "timer-end-harp.mp3",
+			"loop": true,
+		},
+		"timerEndQuick": {
+			"slug": "timer-end-quick.mp3",
+			"loop": true,
+		},
 	};
-	Object.keys(timerEndings).forEach(function (audioId) {
-		var audioEl = new Audio(audioBase + timerEndings[audioId]);
-		audioEl.loop = true;
+	Object.keys(audioList).forEach(function (audioId) {
+		var audio = audioList[audioId];
+		var audioEl = new Audio(audioBase + audio.slug);
+		if ("loop" in audio) audioEl.loop = audio.loop;
 		audios[audioId] = audioEl;
 	});
 }
 loadAudios();
-function stopAudio (audioHolder) {
-	if (audioHolder) {
-		audioHolder.pause();
-		audioHolder.currentTime = 0;
-		audioHolder = null;
-	}
+function audioPlay (type) {
+	let audioKey = audioTypes[type];
+	if (!audioKey) return;
+	audios[audioKey].play();
+	audiosCurrentlyPlaying.push(type);
+}
+function setAudioVolume (type, volume) {
+	let audioKey = audioTypes[type];
+	if (!audioKey) return;
+	audios[audioKey].volume = volume;
+}
+function audioSwitch (type, newValue) {
+	let audioKey = audioTypes[type];
+	if (!audioKey) return;
+	let prevVolume = audios[audioKey].volume;
+	audioStopReset(type);
+	setAudioVolume(type, 1);
+	audioTypes[type] = newValue;
+	audioPlay(type);
+	setAudioVolume(type, prevVolume);
+}
+function audioStopReset (type) {
+	let audioKey = audioTypes[type];
+	if (!audioKey) return;
+	audios[audioKey].pause();
+	audios[audioKey].currentTime = 0;
+	audiosCurrentlyPlaying.splice(audiosCurrentlyPlaying.indexOf(type), 1);
 }
 
 // section: loading manager

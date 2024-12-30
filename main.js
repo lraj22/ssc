@@ -38,8 +38,7 @@ function tick () {
 			timerBtnPlay.classList.toggle("hidden", true);
 			timerBtnPause.classList.toggle("hidden", true);
 			timerBtnRestart.classList.toggle("hidden", false);
-			timerEndedAudio = audios.timerEndHarp;
-			timerEndedAudio.play();
+			audioPlay("timerRing");
 		}
 		timeLeft = Math.floor(timeLeft);
 		let afterDigits = 0;
@@ -214,6 +213,8 @@ closeSchedulesIcon.addEventListener("click", exitScheduleViewAction);
 settingThemeBg.addEventListener("input", updateSettings);
 settingThemeFg.addEventListener("input", updateSettings);
 settingThemeFont.addEventListener("input", updateSettings);
+settingTimerRing.addEventListener("input", updateSettings);
+settingTimerRingVolume.addEventListener("input", updateSettings);
 
 // stopwatch
 stopwatchIcon.addEventListener("click", function () {
@@ -289,7 +290,7 @@ timerBtnRestart.addEventListener("click", function () {
 	timerData.running = false;
 	timerTime.value = msToTimeDiff(timerData.from).replace("s", "");
 	timerTime.disabled = false;
-	stopAudio(timerEndedAudio);
+	audioStopReset("timerRing");
 	timerBtnPlay.classList.toggle("hidden", false);
 	timerBtnPause.classList.toggle("hidden", true);
 	timerBtnRestart.classList.toggle("hidden", true);
@@ -301,7 +302,7 @@ timerTime.addEventListener("input", function () {
 		timerBtnPlay.classList.toggle("hidden", false);
 		timerBtnPause.classList.toggle("hidden", true);
 		timerBtnRestart.classList.toggle("hidden", true);
-		stopAudio(timerEndedAudio);
+		audioStopReset("timerRing");
 	}
 	timerData.from = timerData.total = timeDiffToMs(timerTime.value);
 });
