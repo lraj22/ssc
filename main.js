@@ -114,10 +114,12 @@ addSchedule.addEventListener("click", function () {
 
 // load existing schedules
 localforage.getItem("savedSchedules").then(function (savedSchedules) {
-	if (!savedSchedules) return;
-	setCurrentSchedules(savedSchedules);
-	lastSavedSchedules = savedSchedules;
-	recalcUnsavedChanges();
+	if (savedSchedules) {
+		setCurrentSchedules(savedSchedules);
+		lastSavedSchedules = savedSchedules;
+	} else {
+		lastSavedSchedules = {};
+	}
 	var loadURL = new URL(location.href);
 	var serializedSchedulesV1 = loadURL.searchParams.get("sv1");
 	if (serializedSchedulesV1) {
@@ -128,6 +130,7 @@ localforage.getItem("savedSchedules").then(function (savedSchedules) {
 			lastSavedSchedules = deserialized;
 		}
 	} else setUsingURL(false);
+	recalcUnsavedChanges();
 });
 
 backToOwnSchedules.addEventListener("click", function () {
@@ -194,8 +197,9 @@ copySchedulesLink.addEventListener("click", function () {
 
 // settings
 localforage.getItem("settings").then(function (settings) {
-	if (!settings) return;
-	applySettings(settings);
+	if (settings) {
+		applySettings(settings);
+	}
 	updateSettings();
 });
 

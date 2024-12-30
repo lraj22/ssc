@@ -225,9 +225,9 @@ function setCurrentSchedules (schedules) {
 
 function recalcUnsavedChanges () {
 	if (lastSavedSchedules === null) return false;
-	if (usingURL) return false;
 	var currentSchedules = currentSchedulesToJSON();
 	document.body.classList.toggle("schedulesExist", !!currentSchedules.length);
+	if (usingURL) return false;
 	var schedulesStr = JSON.stringify(currentSchedules);
 	var unsavedChangesExist = (schedulesStr !== JSON.stringify(lastSavedSchedules));
 	unsavedChanges.className = (unsavedChangesExist ? "": "hidden");
