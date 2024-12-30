@@ -73,26 +73,26 @@
 			<h2>Theme</h2>
 			<label for="settingThemeBg" class="schLabel">Background theme</label>
 			<select id="settingThemeBg" data-setting-name="themeBg">
-				<option value="dark">Dark mode (default)</option>
+				<option value="dark" selected>Dark mode (default)</option>
 				<option value="light">Light mode</option>
 				<option value="mistyRose">Misty rose</option>
 			</select><br><br>
 			<label for="settingThemeFg" class="schLabel">Text color theme</label>
 			<select id="settingThemeFg" data-setting-name="themeFg">
-				<option value="darkLight">Dark/light (default)</option>
+				<option value="darkLight" selected>Dark/light (default)</option>
 				<option value="blue">Relaxing blue</option>
 				<option value="purple">Exotic purple</option>
 			</select><br><br>
 			<label for="settingThemeFont" class="schLabel">Font</label>
 			<select id="settingThemeFont" data-setting-name="themeFont">
-				<option value="lucida">Lucida (default)</option>
+				<option value="lucida" selected>Lucida (default)</option>
 				<option value="cambria">Cambria</option>
 				<option value="monospace">Monospace</option>
 			</select><br><br>
 			<h2>Timer</h2>
 			<label for="settingTimerRing" class="schLabel">Timer ring sound</label>
 			<select id="settingTimerRing" data-setting-name="timerRing">
-				<option value="timerEndHarp">Harp (default)</option>
+				<option value="timerEndHarp" selected>Harp (default)</option>
 				<option value="timerEndQuick">Quick</option>
 				<option value="silent">None (silent)</option>
 			</select><br><br>
@@ -106,7 +106,7 @@
 				<option value="100" label="100%"></option>
 			</datalist>
 			<h2>Other settings</h2>
-			<input type="checkbox" id="settingAlwaysShowIconMenu" data-setting-name="alwaysShowIconMenu"><label for="settingAlwaysShowIconMenu"> Always show icon menu?</label>
+			<input type="checkbox" id="settingAlwaysShowIconMenu" data-setting-name="alwaysShowIconMenu" checked><label for="settingAlwaysShowIconMenu"> Always show icon menu?</label>
 			<div id="closeSettingsIcon" class="material-symbols-outlined">close</div>
 		</div>
 		<div id="stopwatch" class="widget hidden">

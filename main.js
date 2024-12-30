@@ -118,7 +118,7 @@ localforage.getItem("savedSchedules").then(function (savedSchedules) {
 		setCurrentSchedules(savedSchedules);
 		lastSavedSchedules = savedSchedules;
 	} else {
-		lastSavedSchedules = {};
+		lastSavedSchedules = [];
 	}
 	var loadURL = new URL(location.href);
 	var serializedSchedulesV1 = loadURL.searchParams.get("sv1");
