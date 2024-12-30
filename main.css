@@ -520,6 +520,24 @@ input[type="range"] {
 	color: var(--theme-bg);
 }
 
+#timerMute {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 0.5rem;
+	font-size: 1.5rem;
+	border-radius: 50% 50% 50% 0;
+	background-color: var(--theme-matching-bg);
+	color: var(--theme-fg);
+	margin: 0.2rem;
+	cursor: pointer;
+	user-select: none;
+}
+
+#timerMute:hover {
+	box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+}
+
 /* loading screen exit animation */
 .exitDown {
 	animation: screenExitDown 750ms 250ms forwards;

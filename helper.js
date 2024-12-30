@@ -43,6 +43,7 @@ var stopwatchData = {
 var timerData = {
 	"from": 10 * 60 * 1000,
 	"total": 10 * 60 * 1000,
+	"isMuted": false,
 };
 var audios = {};
 var audioTypes = {

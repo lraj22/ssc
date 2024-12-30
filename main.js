@@ -38,7 +38,7 @@ function tick () {
 			timerBtnPlay.classList.toggle("hidden", true);
 			timerBtnPause.classList.toggle("hidden", true);
 			timerBtnRestart.classList.toggle("hidden", false);
-			audioPlay("timerRing");
+			if (!timerData.isMuted) audioPlay("timerRing");
 		}
 		timeLeft = Math.floor(timeLeft);
 		let afterDigits = 0;
@@ -309,6 +309,14 @@ timerTime.addEventListener("input", function () {
 		audioStopReset("timerRing");
 	}
 	timerData.from = timerData.total = timeDiffToMs(timerTime.value);
+});
+
+timerMute.addEventListener("click", function () {
+	var isMuted = !timerData.isMuted;
+	timerData.isMuted = isMuted;
+	timerMute.textContent = isMuted ? "volume_off" : "volume_up";
+	timerMute.title = isMuted ? "Click to unmute the timer" : "Click to mute the timer";
+	if (isMuted) audioStopReset("timerRing");
 });
 
 // general
