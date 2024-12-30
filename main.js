@@ -219,6 +219,7 @@ settingThemeFg.addEventListener("input", updateSettings);
 settingThemeFont.addEventListener("input", updateSettings);
 settingTimerRing.addEventListener("input", updateSettings);
 settingTimerRingVolume.addEventListener("input", updateSettings);
+settingAlwaysShowIconMenu.addEventListener("input", updateSettings);
 
 // stopwatch
 stopwatchIcon.addEventListener("click", function () {

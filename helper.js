@@ -35,6 +35,7 @@ var defaultSettings = {
 	"themeFont": "lucida",
 	"timerRing": "harp",
 	"timerRingVolume": "100",
+	"alwaysShowIconMenu": true,
 };
 var settings = cloneObj(settings);
 var stopwatchData = {
@@ -326,7 +327,8 @@ function applySettings (settingsToApply) {
 			console.warn(`Could not apply setting ${JSON.stringify(setting)} (no setting element).`);
 			return;
 		}
-		settingEl.value = appliedSettings[setting];
+		if (settingEl.type !== "checkbox") settingEl.value = appliedSettings[setting];
+		else settingEl.checked = appliedSettings[setting];
 	});
 	reprocessSettings();
 }
@@ -351,11 +353,15 @@ function reprocessSettings () {
 	if (settings.timerRingVolume) {
 		setAudioVolume("timerRing", parseInt(settings.timerRingVolume) / 100);
 	}
+	if ("alwaysShowIconMenu" in settings) {
+		iconMenu.classList.toggle("hoverToShow", !settings.alwaysShowIconMenu);
+	}
 }
 function updateSettings () {
 	var updatedSettings = {};
 	document.querySelectorAll("[data-setting-name]").forEach(function (settingEl) {
-		updatedSettings[settingEl.getAttribute("data-setting-name")] = settingEl.value;
+		var isCheckbox = (settingEl.type === "checkbox");
+		updatedSettings[settingEl.getAttribute("data-setting-name")] = (isCheckbox ? settingEl.checked : settingEl.value);
 	});
 	settings = addObj(defaultSettings, cloneObj(updatedSettings));
 	localforage.setItem("settings", settings);

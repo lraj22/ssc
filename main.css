@@ -358,6 +358,15 @@ input[type="text"]:focus {
 	user-select: none;
 }
 
+#iconMenu.hoverToShow {
+	opacity: 0;
+	transition: all 200ms;
+}
+
+#iconMenu.hoverToShow:hover {
+	opacity: 1;
+}
+
 #iconMenu .material-symbols-outlined {
 	font-size: 1.4rem;
 	margin-left: 0.5rem;
