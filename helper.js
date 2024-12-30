@@ -36,8 +36,9 @@ var defaultSettings = {
 	"timerRing": "harp",
 	"timerRingVolume": "100",
 	"alwaysShowIconMenu": true,
+	"blinkingColon": false,
 };
-var settings = cloneObj(settings);
+var settings = cloneObj(defaultSettings);
 var stopwatchData = {
 	"total": 0,
 };
@@ -333,26 +334,28 @@ function applySettings (settingsToApply) {
 	reprocessSettings();
 }
 function reprocessSettings () {
-	if (settings.themeBg) {
+	if ("themeBg" in settings) {
 		document.documentElement.setAttribute("data-theme-bg", settings.themeBg);
 		document.documentElement.classList.toggle("darkishBg", darkishBgs.includes(settings.themeBg));
 		document.documentElement.classList.toggle("lightishBg", lightishBgs.includes(settings.themeBg));	
 	}
-	if (settings.themeFg) {
+	if ("themeFg" in settings) {
 		document.documentElement.setAttribute("data-theme-fg", settings.themeFg);
 	}
-	if (settings.themeFont) {
+	if ("themeFont" in settings) {
 		document.documentElement.setAttribute("data-theme-font", settings.themeFont);
 	}
-	if (settings.timerRing) {
+	
+	if ("timerRing" in settings) {
 		if ((audiosCurrentlyPlaying.includes("timerRing")) && (audioTypes.timerRing !== settings.timerRing)) {
 			audioSwitch("timerRing", settings.timerRing);
 		}
 		audioTypes.timerRing = settings.timerRing;
 	}
-	if (settings.timerRingVolume) {
+	if ("timerRingVolume" in settings) {
 		setAudioVolume("timerRing", parseInt(settings.timerRingVolume) / 100);
 	}
+	
 	if ("alwaysShowIconMenu" in settings) {
 		iconMenu.classList.toggle("hoverToShow", !settings.alwaysShowIconMenu);
 	}

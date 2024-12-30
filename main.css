@@ -92,7 +92,7 @@ h1 {
 }
 body.showMain #mainDisplay { display: block; }
 
-#timeView {
+#timeView, #timeView * {
 	font-size: 15vw;
 	white-space: nowrap;
 	user-select: none;
@@ -313,6 +313,11 @@ input[type="text"]:focus {
 .textCenter {
 	display: block;
 	margin: 0 auto;
+}
+
+.textInvisible {
+	color: transparent;
+	user-select: none;
 }
 
 .floatRight {
