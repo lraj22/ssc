@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-US" data-theme="dark">
+<html lang="en-US" data-theme-bg="dark" data-theme-fg="darkLight">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,15 +19,6 @@
 				line-height: 100vh;
 				z-index: 1234569;
 				user-select: none;
-			}
-			
-			.exitDown {
-				animation: screenExitDown 750ms 250ms forwards;
-			}
-
-			@keyframes screenExitDown {
-				from { height: 100vh; }
-				to { height: 0; }
 			}
 		</style>
 		<link rel="icon" href="./favicon.ico" sizes="32x32">
@@ -79,14 +70,27 @@
 		<div id="settingsView">
 			<h1>Settings</h1>
 			<p>Customize The School Schedule Clock!</p>
-			<label for="settingTheme" class="schLabel">Theme</label>
-			<select id="settingTheme" data-setting-name="theme">
+			<label for="settingThemeBg" class="schLabel">Background theme</label>
+			<select id="settingThemeBg" data-setting-name="themeBg">
 				<option value="dark">Dark mode (default)</option>
+				<option value="light">Light mode</option>
+				<option value="mistyRose">Misty rose</option>
+			</select><br><br>
+			<label for="settingThemeFg" class="schLabel">Text color theme</label>
+			<select id="settingThemeFg" data-setting-name="themeFg">
+				<option value="darkLight">Dark/light (default)</option>
+				<option value="blue">Relaxing blue</option>
 				<option value="purple">Exotic purple</option>
+			</select><br><br>
+			<label for="settingThemeFont" class="schLabel">Font</label>
+			<select id="settingThemeFont" data-setting-name="themeFont">
+				<option value="lucida">Lucida (default)</option>
+				<option value="cambria">Cambria</option>
+				<option value="monospace">Monospace</option>
 			</select>
 			<div id="closeSettingsIcon" class="material-symbols-outlined">close</div>
 		</div>
-		<div id="stopwatch" class="hidden">
+		<div id="stopwatch" class="widget hidden">
 			<div id="stopwatchDrag" class="material-symbols-outlined">drag_handle</div>
 			<div id="stopwatchTime">0.00</div>
 			<div class="widgetButtons">
@@ -95,7 +99,7 @@
 				<button type="button" id="stopwatchBtnRestart" class="btnClean material-symbols-outlined hidden">replay</button>
 			</div>
 		</div>
-		<div id="timer" class="hidden">
+		<div id="timer" class="widget hidden">
 			<div id="timerDrag" class="material-symbols-outlined">drag_handle</div>
 			<input id="timerTime" value="10:00" placeholder="00:00:00">
 			<div class="widgetButtons">

@@ -5,20 +5,44 @@
 	--theme-danger: #771111;
 }
 
-[data-theme="dark"] {
+[data-theme-bg="dark"] {
 	--theme-bg: black;
-	--theme-fg: white;
 	--theme-contrasting-bg: white;
 	--theme-matching-bg: #222222;
 }
 
-[data-theme="purple"] {
+[data-theme-bg="light"] {
+	--theme-bg: white;
+	--theme-contrasting-bg: black;
+	--theme-matching-bg: #e4e4e4;
+}
+
+[data-theme-bg="mistyRose"] {
 	--theme-bg: mistyrose; /* oklch(94.0012% 0.030076 25.2812) */
-	--theme-fg: blueviolet;
 	--theme-contrasting-bg: black;
 	--theme-matching-bg: #f2d7d4; /* oklch(90.0012% 0.030076 25.2812) */
-	--theme-active: rebeccapurple;
 	--theme-danger: #bb1111;
+}
+
+.darkishBg[data-theme-fg="darkLight"] {
+	--theme-fg: white;
+	--theme-fg-rgb: 255, 255, 255;
+}	
+
+.lightishBg[data-theme-fg="darkLight"] {
+	--theme-fg: black;
+	--theme-fg-rgb: 0, 0, 0;
+}
+
+[data-theme-fg="blue"] {
+	--theme-fg: #2e5d83;
+	--theme-fg-rgb: 46, 93, 131;
+}
+
+[data-theme-fg="purple"] {
+	--theme-fg: blueviolet;
+	--theme-active: rebeccapurple;
+	--theme-fg-rgb: 138, 43, 226;
 }
 
 html, body {
@@ -30,9 +54,29 @@ html, body {
 	overflow: hidden;
 }
 
+[data-theme-font="lucida"] {
+	--theme-font: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+	--theme-font-secondary: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+
+[data-theme-font="cambria"] {
+	--theme-font: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+	--theme-font-secondary: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+[data-theme-font="monospace"] {
+	--theme-font: monospace;
+	--theme-font-secondary: "Courier New", Courier, monospace;
+}
+
 * {
-	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+	font-family: var(--theme-font);
+	font-size: 1rem;
 	line-height: 1;
+}
+
+h1 {
+	font-size: 2rem;
 }
 
 #centerDisplay {
@@ -59,6 +103,10 @@ body.showMain #mainDisplay { display: block; }
 	font-size: 2vw;
 }
 
+#timePeriod {
+	font-size: 2vw;
+}
+
 #timeOver {
 	position: fixed;
 	top: 50%;
@@ -81,7 +129,7 @@ body.showMain #mainDisplay { display: block; }
 }
 
 button {
-	padding: 0.7em 1em;
+	padding: 0.7rem 1rem;
 	background-color: var(--theme-action);
 	border: none;
 	outline: none;
@@ -90,7 +138,7 @@ button {
 	font-size: 0.8vw;
 	border-radius: 4px;
 	cursor: pointer;
-	box-shadow: inset 0 -0.6em 0 -0.3em rgba(0, 0, 0, 0.2);
+	box-shadow: inset 0 -0.6rem 0 -0.3rem rgba(0, 0, 0, 0.2);
 }
 
 button:disabled {
@@ -99,7 +147,7 @@ button:disabled {
 }
 
 button.btnClean {
-	padding: 0.3em 0.6em;
+	padding: 0.4rem 0.8rem;
 	border: none;
 	outline: none;
 	color: var(--theme-fg);
@@ -116,8 +164,8 @@ button.largeBtn {
 }
 
 button:active {
-	top: 0.1em;
-	box-shadow: inset 0 -0.55em 0 -0.3em rgba(0, 0, 0, 0.2);
+	top: 0.1rem;
+	box-shadow: inset 0 -0.55rem 0 -0.3rem rgba(0, 0, 0, 0.2);
 }
 
 button.btnClean:active {
@@ -127,9 +175,8 @@ button.btnClean:active {
 
 #scheduleView, #settingsView {
 	display: none;
-	padding: 2em;
+	padding: 2rem;
 	width: 600px;
-	box-shadow: 0 0 1em 0.1em rgba(255, 255, 255, 0.1);
 	position: fixed;
 	left: 50%;
 	transform: translateX(-50%);
@@ -157,17 +204,17 @@ body.showSchedule #scheduleView { display: block; }
 
 .scheduleBlock {
 	border: 1px dashed var(--theme-fg);
-	padding: 1em;
-	margin-bottom: 1em;
+	padding: 1rem;
+	margin-bottom: 1rem;
 }
 
 .scheduleBlock>div {
-	margin-bottom: 2em;
+	margin-bottom: 2rem;
 }
 
 .schLabel {
 	display: block;
-	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+	font-family: var(--theme-font-secondary);
 }
 
 input[type="text"] {
@@ -186,7 +233,11 @@ input[type="checkbox"] {
 }
 
 input, button, select {
-	margin-top: 0.5em;
+	margin-top: 0.5rem;
+}
+
+[data-theme-font="cambria"] select {
+	font-size: medium;
 }
 
 input[type="text"]:focus {
@@ -196,9 +247,9 @@ input[type="text"]:focus {
 .period {
 	border: 2px solid rgba(127, 127, 127, 0.5);
 	border-radius: 4px;
-	padding: 0.5em;
+	padding: 0.5rem;
 	padding-bottom: 0;
-	margin: 0.5em 0;
+	margin: 0.5rem 0;
 	position: relative;
 }
 
@@ -213,8 +264,8 @@ input[type="text"]:focus {
 
 .topRightBtnMenu {
 	position: absolute;
-	top: 0.3em;
-	right: 0.4em;
+	top: 0.3rem;
+	right: 0.4rem;
 	font-size: 20px;
 }
 
@@ -227,7 +278,7 @@ input[type="text"]:focus {
 .buttonContainer {
 	display: flex;
 	justify-content: space-between;
-	gap: 1em;
+	gap: 1rem;
 }
 
 .scheduleBlock>.buttonContainer {
@@ -270,12 +321,12 @@ input[type="text"]:focus {
 
 #unsavedChanges {
 	position: fixed;
-	top: 1em;
+	top: 1rem;
 	right: 50%;
 	transform: translateX(50%);
 	color: yellow;
 	background-color: #222222;
-	padding: 1em;
+	padding: 1rem;
 	border-radius: 4px;
 }
 
@@ -295,11 +346,12 @@ input[type="text"]:focus {
 	display: unset;
 }
 
+/* icon menu */
 #iconMenu {
 	position: fixed;
 	top: 0%;
 	right: 0%;
-	padding: 1em;
+	padding: 1rem;
 	width: 100%;
 	text-align: right;
 	display: none;
@@ -307,9 +359,8 @@ input[type="text"]:focus {
 }
 
 #iconMenu .material-symbols-outlined {
-	font-size: 1.4em;
-	margin-left: 0.3em;
-	/* background-color: black; */
+	font-size: 1.4rem;
+	margin-left: 0.5rem;
 	background-color: var(--theme-bg);
 	transition: all 200ms;
 }
@@ -344,6 +395,7 @@ input[type="text"]:focus {
 	display: unset;
 }
 
+/* settings */
 #closeSettingsIcon, #closeSchedulesIcon {
 	position: fixed;
 	top: 0%;
@@ -362,8 +414,8 @@ body.showSettings #settingsView { display: block; }
 	border-radius: 4px;
 	background-color: var(--theme-fg);
 	color: var(--theme-bg);
-	padding: 0.5em;
-	margin-bottom: 1em;
+	padding: 0.5rem;
+	margin-bottom: 1rem;
 }
 
 .linklike {
@@ -372,12 +424,14 @@ body.showSettings #settingsView { display: block; }
 	cursor: pointer;
 }
 
+/* stopwatch & timer */
+
 #stopwatch, #timer {
 	background-color: var(--theme-bg);
 	border: 2px solid rgba(127, 127, 127, 0.5);
 	border-radius: 4px;
 	width: max-content;
-	padding: 0.5em;
+	padding: 0.5rem;
 	padding-top: 0;
 	position: fixed;
 	resize: both;
@@ -391,16 +445,16 @@ body.showSettings #settingsView { display: block; }
 
 #stopwatch {
 	top: 10%;
-	right: 1em;
+	right: 1rem;
 }
 
 #timer {
 	top: 30%;
-	right: 1em;
+	right: 1rem;
 }
 
 #stopwatchDrag, #timerDrag {
-	font-size: 1em;
+	font-size: 1rem;
 	text-align: center;
 	width: 100%;
 	cursor: grab;
@@ -415,7 +469,7 @@ body.showSettings #settingsView { display: block; }
 	width: 100%;
 	background-color: var(--theme-matching-bg);
 	color: var(--theme-contrasting-bg);
-	padding: 0.5em;
+	padding: 0.5rem;
 	box-sizing: border-box;
 	margin-top: 0;
 	margin-bottom: 8px;
@@ -429,7 +483,7 @@ body.showSettings #settingsView { display: block; }
 
 .widgetButtons {
 	display: flex;
-	gap: 0.5em;
+	gap: 0.5rem;
 }
 
 .widgetButtons button {
@@ -447,4 +501,14 @@ body.showSettings #settingsView { display: block; }
 .widgetButtons button:active {
 	background-color: var(--theme-fg);
 	color: var(--theme-bg);
+}
+
+/* loading screen exit animation */
+.exitDown {
+	animation: screenExitDown 750ms 250ms forwards;
+}
+
+@keyframes screenExitDown {
+	from { height: 100vh; }
+	to { height: 0; }
 }

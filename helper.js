@@ -27,8 +27,12 @@ var daysBitmap = {
 var timeToCharacter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-".split("");
 var usingURL = false;
 var lastSavedSchedules = null;
+var darkishBgs = ["dark"];
+var lightishBgs = ["light", "mistyRose"];
 var defaultSettings = {
-	"theme": "dark",
+	"themeBg": "dark",
+	"themeFg": "darkLight",
+	"themeFont": "lucida",
 };
 var settings = cloneObj(settings);
 var stopwatchData = {
@@ -308,8 +312,8 @@ function base64ToUserText (base64) {
 
 // section: settings functions
 function applySettings (settingsToApply) {
-	settings = cloneObj(settingsToApply);
 	var appliedSettings = addObj(defaultSettings, settingsToApply);
+	settings = cloneObj(appliedSettings);
 	Object.keys(appliedSettings).forEach(function (setting) {
 		var settingEl = document.querySelector(`[data-setting-name="${setting}"]`);
 		if (!settingEl) {
@@ -321,8 +325,16 @@ function applySettings (settingsToApply) {
 	reprocessSettings();
 }
 function reprocessSettings () {
-	if (settings.theme) {
-		document.documentElement.setAttribute("data-theme", settings.theme);
+	if (settings.themeBg) {
+		document.documentElement.setAttribute("data-theme-bg", settings.themeBg);
+		document.documentElement.classList.toggle("darkishBg", darkishBgs.includes(settings.themeBg));
+		document.documentElement.classList.toggle("lightishBg", lightishBgs.includes(settings.themeBg));	
+	}
+	if (settings.themeFg) {
+		document.documentElement.setAttribute("data-theme-fg", settings.themeFg);
+	}
+	if (settings.themeFont) {
+		document.documentElement.setAttribute("data-theme-font", settings.themeFont);
 	}
 }
 function updateSettings () {

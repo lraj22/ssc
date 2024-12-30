@@ -210,10 +210,10 @@ closeSettingsIcon.addEventListener("click", function () {
 
 closeSchedulesIcon.addEventListener("click", exitScheduleViewAction);
 
-settingTheme.addEventListener("input", function () {
-	document.documentElement.setAttribute("data-theme", this.value);
-	updateSettings();
-});
+// warning: updateSettings should NOT take parameters
+settingThemeBg.addEventListener("input", updateSettings);
+settingThemeFg.addEventListener("input", updateSettings);
+settingThemeFont.addEventListener("input", updateSettings);
 
 // stopwatch
 stopwatchIcon.addEventListener("click", function () {
