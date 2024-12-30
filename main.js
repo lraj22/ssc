@@ -4,7 +4,7 @@
 function tick () {
 	// update time view
 	var d = new Date();
-	var hours = (d.getHours() % 12) || 12;
+	var hours = settings.twentyFourHourTime ? (d.getHours().toString().padStart(2, "0")) : ((d.getHours() % 12) || 12);
 	var colon = (settings.blinkingColon ? '<span class="textInvisible">:</span>' : ":");
 	if ((d.getSeconds() % 2) === 0) colon = ":";
 	var minutes = d.getMinutes().toString().padStart(2, "0");
@@ -215,14 +215,11 @@ closeSettingsIcon.addEventListener("click", function () {
 
 closeSchedulesIcon.addEventListener("click", exitScheduleViewAction);
 
-// warning: updateSettings should NOT take parameters
-settingThemeBg.addEventListener("input", updateSettings);
-settingThemeFg.addEventListener("input", updateSettings);
-settingThemeFont.addEventListener("input", updateSettings);
-settingTimerRing.addEventListener("input", updateSettings);
-settingTimerRingVolume.addEventListener("input", updateSettings);
-settingAlwaysShowIconMenu.addEventListener("input", updateSettings);
-settingBlinkingColon.addEventListener("input", updateSettings);
+document.querySelectorAll("[data-setting-name]").forEach(function (settingEl) {
+	settingEl.addEventListener("input", function () {
+		updateSettings();
+	});
+});
 
 // stopwatch
 stopwatchIcon.addEventListener("click", function () {

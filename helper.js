@@ -36,6 +36,7 @@ var defaultSettings = {
 	"timerRing": "harp",
 	"timerRingVolume": "100",
 	"alwaysShowIconMenu": true,
+	"twentyFourHourTime": false,
 	"blinkingColon": false,
 };
 var settings = cloneObj(defaultSettings);
