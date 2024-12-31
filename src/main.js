@@ -53,6 +53,9 @@ function tick () {
 		timerTime.value = timeLeftStr;
 	}
 	
+	// online?
+	document.getElementById("youAreOffline").classList.toggle("hidden", navigator.onLine);
+	
 	// to next tick
 	requestAnimationFrame(tick);
 }

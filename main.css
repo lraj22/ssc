@@ -558,6 +558,6 @@ input[type="range"] {
 }
 
 @keyframes screenExitDown {
-	from { height: 100vh; }
-	to { height: 0; }
+	from { transform: none; }
+	to { transform: translateY(100vh); }
 }

@@ -1,3 +1,23 @@
+/*! loadCSS. [c]2020 Filament Group, Inc. MIT License */
+/*! Minifed */
+!function(e){"use strict";var n=function(n,t,r,i){var o,d=e.document,a=d.createElement("link");if(t)o=t;else{var f=(d.body||d.getElementsByTagName("head")[0]).childNodes;o=f[f.length-1]}var l=d.styleSheets;if(i)for(var s in i)i.hasOwnProperty(s)&&a.setAttribute(s,i[s]);a.rel="stylesheet",a.href=n,a.media="only x",!function e(n){if(d.body)return n();setTimeout(function(){e(n)})}(function(){o.parentNode.insertBefore(a,t?o:o.nextSibling)});var u=function(e){for(var n=a.href,t=l.length;t--;)if(l[t].href===n)return e();setTimeout(function(){u(e)})};function c(){a.addEventListener&&a.removeEventListener("load",c),a.media=r||"all"}return a.addEventListener&&a.addEventListener("load",c),a.onloadcssdefined=u,u(c),a};"undefined"!=typeof exports?exports.loadCSS=n:e.loadCSS=n}("undefined"!=typeof global?global:this);
+/*! onloadCSS. (onload callback for loadCSS) [c]2017 Filament Group, Inc. MIT License */
+/*! Minifed */
+function onloadCSS(n,a){var d;function t(){!d&&a&&(d=!0,a.call(n))}n.addEventListener&&n.addEventListener("load",t),n.attachEvent&&n.attachEvent("onload",t),"isApplicationInstalled"in navigator&&"onloadcssdefined"in n&&n.onloadcssdefined(t)}
+onloadCSS(
+	loadCSS("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block"),
+	function () {
+		document.body.classList.add("materialSymbolsLoaded");
+		loaded();
+	}
+);
+onloadCSS(
+	loadCSS("./main.css"),
+	function () {
+		loaded();
+	}
+);
+
 // section: variablization of all [id]s
 document.querySelectorAll("[id]").forEach(function (e) { window[e.id] = e; });
 
@@ -555,9 +575,11 @@ function audioStopReset (type) {
 
 // section: loading manager
 function loaded () {
+	var threshold = 3; // waiting for 3 flags: window.onload & 2 onloadCSS
+	if (!navigator.onLine) threshold = 1; // just wait for load
 	loadFlags++;
-	// waiting for 1 flag: window.onload
-	if (loadFlags >= 1) {
+	if (loadFlags >= threshold) {
 		loadingScreen.className = "exitDown";
+		document.body.classList.remove("stillLoading");
 	}
 }

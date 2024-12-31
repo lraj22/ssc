@@ -1,14 +1,16 @@
 // Establish a cache name
-const cacheName = "SSCCache_Dec2024_v1";
+const cacheName = "SSCCache_Dec2024_v2";
+const base = "/ssc/";
 const cachedItems = [
-	"/index.html",
-	"/helper.js",
-	"/main.js",
-	"/main.css",
-	"/favicons/favicon-32.png",
-	"/favicons/favicon-16.png",
-	"/sw.js",
-];
+	"index.html",
+	"helper.js",
+	"main.js",
+	"main.css",
+	"favicons/favicon-32.png",
+	"favicons/favicon-16.png",
+	"lib/localforage.min.js",
+	"sw.js",
+].map(item => base + item);
 
 var debugLogs = false;
 
@@ -19,7 +21,11 @@ function log() {
 
 self.addEventListener("install", (event) => {
 	log("[sw.js] Installing...");
-	event.waitUntil(caches.open(cacheName));
+	event.waitUntil(caches.open(cacheName).then(function (cache) {
+		cachedItems.forEach(function (item) {
+			cache.add(item);
+		});
+	}));
 });
 
 // remove cached items when new cache exists
@@ -43,7 +49,7 @@ self.addEventListener("activate", (e) => {
 // Network first, cache fallback strategy
 self.addEventListener("fetch", (event) => {
 	var parsedUrl = new URL(event.request.url).pathname;
-	if (parsedUrl === "/") parsedUrl = "/index.html";
+	if (parsedUrl === base) parsedUrl = base + "index.html";
 	// Check if this is one of our cached URLs
 	if (cachedItems.includes(parsedUrl)) {
 		// Open the cache

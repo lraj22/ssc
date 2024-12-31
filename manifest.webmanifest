@@ -70,7 +70,8 @@
 	"id": "/ssc/",
 	"start_url": "/ssc/",
 	"background_color": "#117711",
-	"display": "fullscreen",
+	"display_override": ["fullscreen"],
+	"display": "standalone",
 	"scope": "/ssc/",
 	"theme_color": "#117711",
 	"description": "Tracking bells, breaks, and beyond!"
