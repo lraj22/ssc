@@ -1,14 +1,12 @@
 // Establish a cache name
-const cacheName = "SSCCache_Dec2024_v2";
+const cacheName = "SSCCache_Dec2024_v3";
 const base = "/ssc/";
 const cachedItems = [
 	"index.html",
-	"helper.js",
-	"main.js",
-	"main.css",
+	"all.min.js",
+	"all.min.css",
 	"favicons/favicon-32.png",
 	"favicons/favicon-16.png",
-	"lib/localforage.min.js",
 	"sw.js",
 ].map(item => base + item);
 

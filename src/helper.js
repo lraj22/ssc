@@ -12,7 +12,7 @@ onloadCSS(
 	}
 );
 onloadCSS(
-	loadCSS("./main.css"),
+	loadCSS("./all.min.css"),
 	function () {
 		loaded();
 	}
