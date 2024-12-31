@@ -118,30 +118,43 @@ addSchedule.addEventListener("click", function () {
 });
 
 // load existing schedules
-localforage.getItem("savedSchedules").then(function (savedSchedules) {
-	if (savedSchedules) {
-		setCurrentSchedules(savedSchedules);
-		lastSavedSchedules = savedSchedules;
-	} else {
-		lastSavedSchedules = [];
-	}
-	var loadURL = new URL(location.href);
-	var serializedSchedulesV1 = loadURL.searchParams.get("sv1");
-	if (serializedSchedulesV1) {
-		var deserialized = deserializeSchCode(serializedSchedulesV1);
-		if (JSON.stringify(lastSavedSchedules) !== JSON.stringify(deserialized)) {
-			setUsingURL(true);
-			setCurrentSchedules(deserialized);
-			lastSavedSchedules = deserialized;
+function loadSavedSchedules () {
+	localforage.getItem("savedSchedules").then(function (savedSchedules) {
+		if (savedSchedules) {
+			setCurrentSchedules(savedSchedules);
+			lastSavedSchedules = savedSchedules;
+		} else {
+			lastSavedSchedules = [];
 		}
-	} else setUsingURL(false);
-	recalcUnsavedChanges();
-});
+		var loadURL = new URL(location.href);
+		var serializedSchedulesV1 = loadURL.searchParams.get("sv1");
+		if (serializedSchedulesV1) {
+			var deserialized = deserializeSchCode(serializedSchedulesV1);
+			if (JSON.stringify(lastSavedSchedules) !== JSON.stringify(deserialized)) {
+				setUsingURL(true);
+				setCurrentSchedules(deserialized);
+				lastSavedSchedules = deserialized;
+			}
+		} else setUsingURL(false);
+		recalcUnsavedChanges();
+	});
+}
+loadSavedSchedules();
 
 backToOwnSchedules.addEventListener("click", function () {
 	var currentURL = new URL(location.href);
 	currentURL.searchParams.delete("sv1");
-	location.assign(currentURL);
+	history.pushState({}, "", currentURL);
+	loadSavedSchedules();
+});
+
+saveLinkSchedules.addEventListener("click", function () {
+	saveState(function () {
+		var currentURL = new URL(location.href);
+		currentURL.searchParams.delete("sv1");
+		history.pushState({}, "", currentURL);
+		loadSavedSchedules();
+	});
 });
 
 uploadSchedules.addEventListener("click", function () {

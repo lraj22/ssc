@@ -258,11 +258,11 @@ function recalcUnsavedChanges () {
 	return unsavedChangesExist;
 }
 
-function saveState () {
+function saveState (callback) {
 	setUsingURL(false);
 	lastSavedSchedules = currentSchedulesToJSON();
-	localforage.setItem("savedSchedules", lastSavedSchedules);
 	unsavedChanges.className = "";
+	localforage.setItem("savedSchedules", lastSavedSchedules, callback);
 }
 
 // section: functions that deal with (de)serialized schedules somehow
