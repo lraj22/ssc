@@ -394,7 +394,17 @@ function updateSettings () {
 
 // stopwatch & timer
 function makeDraggable(element, dragger) {
-	var posX = 0, posY = 0, mouseX = 0, mouseY = 0;
+	function mousemoveDrag (e) {
+		e.preventDefault();
+		posX1 = mouseX - e.clientX;
+		posY1 = mouseY - e.clientY;
+		mouseX = e.clientX;
+		mouseY = e.clientY;
+		element.style.top = (element.offsetTop - posY1) + "px";
+		element.style.left = (element.offsetLeft - posX1) + "px";
+	}
+	
+	var posX1 = 0, posY1 = 0, mouseX = 0, mouseY = 0;
 	dragger.addEventListener("mousedown", function (e) {
 		e.preventDefault();
 		document.body.classList.add("dragging");
@@ -405,18 +415,36 @@ function makeDraggable(element, dragger) {
 			document.onmouseup = null;
 			document.onmousemove = null;
 		};
-		document.onmousemove = elementDrag;
+		document.onmousemove = mousemoveDrag;
 	});
-
-	function elementDrag(e) {
-		e.preventDefault();
-		posX = mouseX - e.clientX;
-		posY = mouseY - e.clientY;
-		mouseX = e.clientX;
-		mouseY = e.clientY;
-		element.style.top = (element.offsetTop - posY) + "px";
-		element.style.left = (element.offsetLeft - posX) + "px";
-	}
+	
+	dragger.addEventListener("touchstart", function (ev) {
+		document.body.classList.add("dragging");
+		dragger.addEventListener("touchmove", ontouchmove, {
+			"passive": false,
+		});
+		dragger.addEventListener("touchend", ontouchend);
+		dragger.addEventListener("touchcancel", ontouchend);
+	
+		function ontouchmove (e) {
+			e.preventDefault();
+			for (target of e.targetTouches) {
+				var x = target.clientX - dragger.clientWidth/2 + "px";
+				var y = target.clientY - dragger.clientHeight/2 + "px";
+				element.style.left = x;
+				element.style.top = y;
+			}
+		
+		}
+		
+		function ontouchend () {
+			document.body.classList.remove("dragging");
+			dragger.removeEventListener('touchmove', ontouchmove);
+			dragger.removeEventListener("touchend", ontouchend);
+			dragger.removeEventListener("touchcancel", ontouchend);
+		}
+	
+	});
 }
 
 function adjustFontSize (textElement) {
