@@ -473,7 +473,7 @@ function getCurrentPeriod () {
 	var today = 1 << d.getDay(); // bitwise shift left (matches daysBitmap)
 	for (let i = 0; i < lastSavedSchedules.length; i++) {
 		let currentSchedule = lastSavedSchedules[i];
-		if (!(currentSchedule.days & today)) break; // bitwise AND (checks if dayBitmap has day enabled)
+		if (!(currentSchedule.days & today)) continue; // bitwise AND (checks if dayBitmap has day enabled)
 		for (let j = 0; j < currentSchedule.periods.length; j++) {
 			let period = currentSchedule.periods[j];
 			let periodStart = timeBitToDate(period.starts);
