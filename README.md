@@ -6,7 +6,7 @@ The School Schedule Clock (SSC) is a feature-filled clock that makes keeping tra
 
 ## How to use
 
-SSC can be found online at [lraj22.github.io/ssc/][ssc]. Click the link to open it.
+SSC can be found online at [ssc.lraj22.xyz][ssc]. Click the link to open it.
 
 It's really easy to use:
 
@@ -35,7 +35,7 @@ The School Schedule Clock is [MIT licensed][license].
 
 © 2024 Lakshya Raj
 
-[ssc]: https://lraj22.github.io/ssc/ "The School Schedule Clock"
+[ssc]: https://ssc.lraj22.xyz/ "The School Schedule Clock"
 [lraj22]: https://github.com/lraj22 "Lakshya Raj (@lraj22) on GitHub"
 [lraj23]: https://github.com/lraj23 "Lavith Raj (@lraj23) on GitHub"
 [timer ring sounds]: https://musescore.com/user/77422795/scores/22599025 "SSC Timer End Sounds | MuseScore"
